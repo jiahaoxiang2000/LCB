@@ -8,8 +8,6 @@
 
 The benchmarking framework was developed and tested on Windows 10. It does not use a Windows specific feature, though. So, in principle you might be able to use it by meeting the above requirements. You can let us know if you have (or don't have) any issues on different platforms.
 
-You need to make sure that the `PATH` environment variable is set for running `python` and `platformio` commands work from the current path. On Windows 10, the PlatformIO binaries are located at `/c/Users/[username]/.platformio/penv/Scripts/`.
-
 ## Experiments and Operating Modes
 
 The framework is designed to process implementations and experiments one at a time. The implementation that is to be benchmarked must be copied under the `src\iut` folder. There must be exactly one implementation in this folder, otherwise the build will fail.
