@@ -75,12 +75,12 @@ cipher_ctx lcb_cipher = {
 The following files are used as markers for the build script:
 
  - An empty file named `primary` is added under the primary variant folders.
- - For Assembly implementations, an empty file `lwc_arc_[archname]` is added in order to avoid the compilation of the implementation on incompatible architectures.
+ - For Assembly implementations, an empty file `lcb_[archname]` is added in order to avoid the compilation of the implementation on incompatible architectures.
 
 
-For implementations that require an input sizes to be a multiple of *k > 1* bytes, a file named `lwc_constraints.h` is added. If this file does not exist in the implementation directory then it is assumed that the implementation handles inputs of all sizes. As an example, if an AEAD implementation requires the plaintext length to be a multiple of 4 bytes, then the `lwc_constraints.h` file must have the following content:
+For implementations that require an input sizes to be a multiple of *k > 1* bytes, a file named `lcb_constraints.h` is added. If this file does not exist in the implementation directory then it is assumed that the implementation handles inputs of all sizes. As an example, if an AEAD implementation requires the plaintext length to be a multiple of 4 bytes, then the `lcb_constraints.h` file must have the following content:
  ``` c
- #define LWC_MLEN_STEP 4
+ #define LCB_MLEN_STEP 4
  ```
-The `LWC_MLEN_STEP` definition can be used to specify input size constraints for both the *plaintext length* for AEAD and the *message length* for Hash functions. Similarly, `LWC_ALEN_STEP` can be used to specify input constraints for the associated data length.
+The `LCB_MLEN_STEP` definition can be used to specify input size constraints for both the *plaintext length*. Similarly, `LCB_MLEN_STEP` can be used to specify input constraints for the associated data length.
 
