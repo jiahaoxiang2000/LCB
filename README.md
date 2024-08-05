@@ -17,6 +17,6 @@ More information on implementations included in this effort can be found [here](
   - more modern by use the platformio, little configure for more platforms.
 - [Fair Evaluation of Lightweight Cryptographic Systems (FELICS) - 2019](https://github.com/cryptolu/FELICS)
   - use the shell script to implement the benchmarking framework, hard to debug
-- [lwc-finalists](https://github.com/rweather/lwc-finalists)
+- [lwc-finalists - 2022](https://github.com/rweather/lwc-finalists)
   - use the makefile to do, flexible, but need some pre-configuration
 
