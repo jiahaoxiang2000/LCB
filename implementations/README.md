@@ -1,4 +1,4 @@
-This folder contains implementations collected from the submission packages and the following repositories:
+Those repositories is perfect way to learn software implementations the lightweight cryptography:
 
  - https://github.com/ascon/ascon-c
  - https://github.com/aadomn/gift
@@ -16,33 +16,23 @@ This folder contains implementations collected from the submission packages and 
 The directory structure of the implementations is as follows:
 
 ```
-- [submission_name]
-    - crypto_aead
-        - [aead_variant1]
-            - [impl1]
-            - [impl2]
-        - [aead_variant2]
-            - [impl1]
-            - [impl2]
-    - crypto_hash
-        - [hash_variant1]
-            - [impl1]
-            - [impl2]
-    - crypto_aead_hash
-        - [aead_hash_variant1]
-            - [impl1]
-            - [impl2]
+- [cipher_name]
+	- [cipher_variant1]
+		- [impl1]
+		- [impl2]
+	- [cipher_variant2]
+		- [impl1]
+		- [impl2]
 ```
 
-For the submissions where there was an AEAD and Hash variant with the same name, the folder names have been appended with 'aead' or 'hash' so as to make all the variant names unique.
 
 ## Changes made to the implementations and the directories
 
 In each implementation folder, a C file that contains a wrapper for the implementation is added to make it compatible with the *benchmarking framework*:
 
-### AEAD implementations
+### cipher implementations
 
-A file named `lwc_crypto_aead.c` has been aded. This file defines the `aead_ctx` structure declared in `lwc_crypto_aead.h`:
+A file named `cipher.c` has been aded. This file defines the `cipher_ctx` structure declared in `cipher.h`:
 
 ``` c
 typedef struct {
@@ -55,16 +45,16 @@ typedef struct {
 	fn_aead_encrypt encrypt;
 	fn_aead_decrypt decrypt;
 
-} aead_ctx;
+} cipher_ctx;
 ```
 
-An AEAD implementation must have a `lwc_crypto_aead.c` file that defines a `aead_ctx` with the name `lwc_aead_cipher`. Here's an example:
+An AEAD implementation must have a `cipher.c` file that defines a `cipher_ctx` with the name `lcb_cipher`. Here's an example:
 
 ``` c
 #include "lwc_crypto_aead.h"
 #include "api.h"
 
-aead_ctx lwc_aead_cipher = {
+cipher_ctx lcb_cipher = {
 	"aes-gcm",
 	"mbedtls",
 	CRYPTO_KEYBYTES,
@@ -75,36 +65,9 @@ aead_ctx lwc_aead_cipher = {
 };
 ```
 
-### Hash implementations
 
-Similar to the AEAD case, a file named `lwc_crypto_hash.c` which defines the `hash_ctx` structure declared in `lwc_crypto_hash.h` is added:
 
-``` c
-typedef struct {
-
-	const char* variant_name;
-	const char* impl_name;
-	int DigestSize;
-	fn_hash hash;
-
-} hash_ctx;
-```
-
-The `lwc_crypto_hash.c` file must define a variable named `lwc_hash_ctx` of type `hash_ctx`. Here's a sample `lwc_crypto_hash.c` file:
-
-``` c
-#include "lwc_crypto_hash.h"
-#include "api.h"
-
-hash_ctx lwc_hash_ctx = {
-	"sha256",
-	"mbedtls",
-	CRYPTO_BYTES,
-	crypto_hash,
-};
-```
-
-**Note:** The `lwc_crypto_aead.c` and `lwc_crypto_hash.c` files make use of the `api.h` file in order to define algorithm parameters such as Key Length, Nonce Length, etc. If an implementation did not have this file, it was copied from the *reference implementation* of the variant.
+**Note:** The `cipher.c` make use of the `api.h` file in order to define algorithm parameters such as Key Length, etc. If an implementation did not have this file, it was copied from the *reference implementation* of the variant.
 
 
 ## Other changes
