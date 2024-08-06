@@ -1,1 +1,1 @@
-#define LWC_MODE_GENKAT_AEAD
+#define LWC_MODE_TIMING_AEAD

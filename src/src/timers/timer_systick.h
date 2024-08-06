@@ -32,7 +32,7 @@
 #pragma once
 
 
-#ifdef LWC_PLATFORM_MKRZERO
+#ifdef LWC_PLATFORM_l475vg
 
 
 class timer_cycles {

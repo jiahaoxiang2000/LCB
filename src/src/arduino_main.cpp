@@ -49,15 +49,14 @@ void setup()
   pinMode(PE9, OUTPUT);
 
   Serial.begin(9600);
-  Serial.println("LWC benchmark runing");
-  // Serial.println();
+  Serial.println();
 
   // Wait for a few seconds before running the experiments in order to allow
   // enonugh time for opening the terminal window if run from the IDE
-  // stop_watch(5);
+  stop_watch(5);
 #endif
 
-  // int ret = do_experiments();
+  int ret = do_experiments();
 
 #ifndef LWC_EXPERIMENT_SIZE
   // SOUT << "# lwc exit " << ret << SENDL;
@@ -75,8 +74,6 @@ void loop()
 #if defined(LWC_PLATFORM_NODEMCUV2) && !defined(LWC_EXPERIMENT_SIZE)
   yield();
 #endif
-
-  SOUT << "LWC benchmark runing" << SENDL;
 
   // turn the LED on (HIGH is the voltage level)
   digitalWrite(PE9, HIGH);
