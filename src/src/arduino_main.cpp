@@ -49,6 +49,7 @@ void setup()
   pinMode(PE9, OUTPUT);
 
   Serial.begin(9600);
+  Serial.println("LWC benchmark runing");
   // Serial.println();
 
   // Wait for a few seconds before running the experiments in order to allow
