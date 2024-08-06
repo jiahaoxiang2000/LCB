@@ -1,30 +1,30 @@
 #
 # NIST-developed software is provided by NIST as a public service.
 # You may use, copy and distribute copies of the software in any medium,
-# provided that you keep intact this entire notice. You may improve, 
+# provided that you keep intact this entire notice. You may improve,
 # modify and create derivative works of the software or any portion of
 # the software, and you may copy and distribute such modifications or
 # works. Modified works should carry a notice stating that you changed
 # the software and should note the date and nature of any such change.
-# Please explicitly acknowledge the National Institute of Standards and 
+# Please explicitly acknowledge the National Institute of Standards and
 # Technology as the source of the software.
 #
-# NIST-developed software is expressly provided "AS IS." NIST MAKES NO 
+# NIST-developed software is expressly provided "AS IS." NIST MAKES NO
 # WARRANTY OF ANY KIND, EXPRESS, IMPLIED, IN FACT OR ARISING BY OPERATION
 # OF LAW, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTY OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT AND DATA ACCURACY. NIST
-# NEITHER REPRESENTS NOR WARRANTS THAT THE OPERATION OF THE SOFTWARE WILL BE 
-# UNINTERRUPTED OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED. NIST 
+# NEITHER REPRESENTS NOR WARRANTS THAT THE OPERATION OF THE SOFTWARE WILL BE
+# UNINTERRUPTED OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED. NIST
 # DOES NOT WARRANT OR MAKE ANY REPRESENTATIONS REGARDING THE USE OF THE SOFTWARE
 # OR THE RESULTS THEREOF, INCLUDING BUT NOT LIMITED TO THE CORRECTNESS, ACCURACY,
 # RELIABILITY, OR USEFULNESS OF THE SOFTWARE.
 #
-# You are solely responsible for determining the appropriateness of using and 
-# distributing the software and you assume all risks associated with its use, 
-# including but not limited to the risks and costs of program errors, compliance 
-# with applicable laws, damage to or loss of data, programs or equipment, and 
+# You are solely responsible for determining the appropriateness of using and
+# distributing the software and you assume all risks associated with its use,
+# including but not limited to the risks and costs of program errors, compliance
+# with applicable laws, damage to or loss of data, programs or equipment, and
 # the unavailability or interruption of operation. This software is not intended
-# to be used in any situation where a failure could cause risk of injury or 
+# to be used in any situation where a failure could cause risk of injury or
 # damage to property. The software developed by NIST employees is not subject to
 # copyright protection within the United States.
 #
@@ -32,18 +32,14 @@
 #!/bin/bash
 
 # Select appropriate extension for PlatformIO executable
-EXT=".exe" # Windows
-#EXT="" # Mac, Linux
-
+# EXT=".exe" # Windows
+EXT="" # Mac, Linux
 
 # Target platform names
-platform_list=("mkrzero uno nano33ble nano_every nodemcuv2 chipkit_mx3 dueUSB")
+platform_list=("l475vg")
 
 # List of experiments to be performed
 experiment_list=("size kat timing")
-
-# The type of algorithms to process
-primitive_folder_list=("crypto_aead crypto_hash crypto_aead_hash")
 
 # The list of submission names to be omitted from processing
 skip_submission=("")
@@ -54,23 +50,22 @@ skip_variant=("")
 # The list of implementation names to be omitted from processing
 skip_impl=("")
 
-
 #
 # Folders
 #
 base_folder="$(pwd)"
-impl_folder="$base_folder/../../implementations"
+impl_folder="$base_folder/../implementations"
 
 # Functionalities for code size measurements
 # Size measurements are performed for encryption only, decryption only and both for AEAD implementations.
 # We have to provide a dummy entry for hash functionality even though hash implementations do not have different functionalities.
 # Note: The mode names when prepended by "LWC_MODE_USE_" must match a predefined mode of operation
-aead_modes=("AEAD_ENCRYPT AEAD_DECRYPT AEAD_BOTH")
-hash_modes=("HASH")
-combined_modes=("COMBINED_AEAD_ENCRYPT COMBINED_AEAD_DECRYPT COMBINED_AEAD_BOTH")
+# aead_modes=("AEAD_ENCRYPT AEAD_DECRYPT AEAD_BOTH")
+# hash_modes=("HASH")
+# combined_modes=("COMBINED_AEAD_ENCRYPT COMBINED_AEAD_DECRYPT COMBINED_AEAD_BOTH")
 
 # String searched in serial output indicating the end of program
-eof_marker="# lwc exit"
+eof_marker="# lcb exit"
 
 # Checks whether the first argument is in the list of items provided by the second argument
 function includes() {
@@ -86,20 +81,17 @@ function includes() {
 
 # Outputs the argument to console in green color
 function print_info() {
-
-	echo -e "$@" "\x1b[0m"
+	echo -e "\x1b[32m$@" "\x1b[0m"
 }
 
 # Outputs the argument to console in yellow color
 function print_warning() {
-
-	echo -e "$@" "\x1b[0m"
+	echo -e "\x1b[33m$@" "\x1b[0m"
 }
 
 # Outputs the argument to console in red color
 function print_error() {
-
-	echo -e "$@" "\x1b[0m"
+	echo -e "\x1b[31m$@" "\x1b[0m"
 }
 
 # Stop watch timer
@@ -123,8 +115,7 @@ function wait_eof_marker() {
 
 	# Check output file periodically until the end of file marker is found or an exception is generated
 	count=0
-	while [ $count -eq 0 ]
-	do
+	while [ $count -eq 0 ]; do
 		sleep 10s
 		count=$(grep -c "$eof_marker" $outfile)
 
@@ -140,26 +131,26 @@ function wait_eof_marker() {
 #
 function verify_kat() {
 
-#	configs=$(echo $target-release-o2)
+	#	configs=$(echo $target-release-o2)
 
-    if [ $variant == "empty_aead" ] && [ "$variant" == "empty_hash" ] && [ "$variant" == "empty_aead_hash" ]; then
-        echo "skipping KAT for variant $variant"
-        return 0
-    fi
+	if [ $variant == "empty" ]; then
+		echo "skipping KAT for variant $variant"
+		return 0
+	fi
 
 	results_file="$out_folder/kat_results.txt"
 
-	print_info "+verify_kat_$prim($submission, $variant, $impl)"
+	print_info "+verify_kat($submission, $variant, $impl)"
 
-	printf "\n" >> $results_file
+	printf "\n" >>$results_file
 
 	# Print header
 	count=$(grep -c "submission" $results_file)
 	if [[ $count == 0 ]]; then
-		echo "submission,variant,implementation,primitive,kat_result,os,o1,o2,o3" >> $results_file
+		echo "submission,variant,implementation,kat_result,os,o1,o2,o3" >>$results_file
 	fi
 
-	printf "$submission,$variant,$impl,$prim" >> $results_file
+	printf "$submission,$variant,$impl" >>$results_file
 
 	# We want to print this error only once for each variant, not for every build configuration
 	if [ ! -f $kat_file_full_path ]; then
@@ -174,7 +165,7 @@ function verify_kat() {
 		builderr=$kat_folder/$submission-$variant-$impl-$conf-kat-err.txt
 
 		if [ ! -f $kat_file_full_path ]; then
-			printf ",kat_err_nofile" >> $results_file
+			printf ",kat_err_nofile" >>$results_file
 		else
 
 			# Skip if already processed
@@ -183,50 +174,51 @@ function verify_kat() {
 			else
 
 				# Update mode header file
-				echo $lwc_mode_genkat > src/lwc_mode.h
-                echo $lwc_mode_genkat
+				echo $lwc_mode_genkat >src/lwc_mode.h
+				echo $lwc_mode_genkat
 
 				print_info "building implementation $impl with config $conf"
-				platformio$EXT run --verbose --environment $conf > $buildout 2> $builderr
+				platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf"
-					printf ",kat_err_build" >> $results_file
+					printf ",kat_err_build" >>$results_file
 				else
 
-                    if [[ "$EXT" == ".exe" ]]; then
-                        stop_watch "uploading" 3
-                        platformio$EXT run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
-                        sleep 3s
-                        platformio$EXT device monitor > $outfile& 2> $temp_folder/serial_err.txt
-                        PID=$!
+					if [[ "$EXT" == ".exe" ]]; then
+						stop_watch "uploading" 3
+						platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
+						sleep 3s
+						platformio$EXT device monitor >$outfile &
+						2>$temp_folder/serial_err.txt
+						PID=$!
 
-                        wait_eof_marker
-						
-                        kill -9 $PID
-                    else
-                        stop_watch "uploading" 3
-                        platformio$EXT run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
-                        sleep 3s
-                        platformio$EXT device monitor --filter log2file 2> $temp_folder/serial_err.txt
-                        logfile=$(ls -t platformio-device-monitor* | head -1)
-                        echo $logfile
-                        mv $logfile $outfile
-                    fi
+						wait_eof_marker
 
-					python$EXT trim_genkat_output.py $outfile > $temp_folder/kat.txt
+						kill -9 $PID
+					else
+						stop_watch "uploading" 3
+						platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
+						sleep 3s
+						platformio$EXT device monitor --filter log2file 2>$temp_folder/serial_err.txt
+						logfile=$(ls -t platformio-device-monitor* | head -1)
+						echo $logfile
+						mv $logfile $outfile
+					fi
 
-					diff -w $temp_folder/kat.txt $impl_folder/$submission/$prim_dir/$variant/$kat_file > $difffile
+					python$EXT trim_genkat_output.py $outfile >$temp_folder/kat.txt
+
+					diff -w $temp_folder/kat.txt $impl_folder/$submission/$variant/$kat_file >$difffile
 					#diff -w $outfile $kat_file_full_path > $difffile
 
 					diff_ret=$?
 
 					if [[ $diff_ret != 0 ]]; then
 						echo "$submission $variant $impl $conf [fail]"
-						printf ",kat_err_mismatch" >> $results_file
+						printf ",kat_err_mismatch" >>$results_file
 					else
 						echo "$submission $variant $impl $conf [success]"
-						printf ",kat_success" >> $results_file
+						printf ",kat_success" >>$results_file
 					fi
 
 				fi # build failed
@@ -234,7 +226,7 @@ function verify_kat() {
 			fi # output file exists
 
 		fi # KAT file not found
-										
+
 	done # conf
 
 	print_info "-verify_kat()"
@@ -249,19 +241,15 @@ function measure_code_size() {
 
 	allfailed=1
 
-	print_info "+measure_code_size_$prim($submission, $variant, $impl)"
+	print_info "+measure_code_size($submission, $variant, $impl)"
 
-
-	if [[ $prim == "aead" ]]; then
-
-		if [ -f "src/iut/$impl/lwc_crypto_aead.cpp" ]; then
-			infile="lwc_crypto_aead.cpp"
-		else
-			infile="lwc_crypto_aead.c"
-		fi
-
-		mv src/iut/$impl/$infile src/iut/$impl/lwc_crypto_aead.in
+	if [ -f "src/iut/$impl/lwc_crypto.cpp" ]; then
+		infile="lwc_crypto.cpp"
+	else
+		infile="lwc_crypto.c"
 	fi
+
+	mv src/iut/$impl/$infile src/iut/$impl/lwc_crypto.in
 
 	for mode in ${modes[@]}; do
 
@@ -270,27 +258,24 @@ function measure_code_size() {
 			outfile=$size_folder/$submission-$variant-$impl-$conf-$mode-out.txt
 			errfile=$size_folder/$submission-$variant-$impl-$conf-$mode-err.txt
 
-			echo "#define LWC_MODE_USE_$mode" > src/lwc_mode.h
+			echo "#define LWC_MODE_USE_$mode" >src/lwc_mode.h
 
-			if [[ $prim == "aead" ]]; then
-				python$EXT gen_lwc_aead.py src/iut/$impl/lwc_crypto_aead.in $mode > src/iut/$impl/$infile
-			fi
 
 			# Skip if an output file exists
 			if [[ $overwrite = false ]] && [[ -f $outfile ]]; then
 				print_warning "skipping implementation $impl with config $conf [output file exists]"
 			else
 
-				printf "$submission,$variant,$impl,$conf,$mode" >> $out_folder/sizes_raw.txt
+				printf "$submission,$variant,$impl,$conf,$mode" >>$out_folder/sizes_raw.txt
 
 				print_info "building implementation $impl with config $conf"
 
-				platformio$EXT run --verbose --environment $conf > $outfile 2> $errfile
+				platformio$EXT run --verbose --environment $conf >$outfile 2>$errfile
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf, $mode"
-					echo "build failed" > $outfile
-					printf ",error" >> $out_folder/sizes_raw.txt
+					echo "build failed" >$outfile
+					printf ",error" >>$out_folder/sizes_raw.txt
 				fi
 
 			fi
@@ -299,9 +284,7 @@ function measure_code_size() {
 
 	done # mode
 
-	if [[ $prim == "aead" ]]; then
-		mv src/iut/$impl/lwc_crypto_aead.in src/iut/$impl/$infile
-	fi
+	mv src/iut/$impl/lwc_crypto.in src/iut/$impl/$infile
 
 	print_info "-measure_code_size()"
 
@@ -313,72 +296,67 @@ function measure_code_size() {
 #
 function measure_timing() {
 
-	print_info "+measure_timing_$prim($submission, $variant, $impl)"
+	print_info "+measure_timing($submission, $variant, $impl)"
 
-		for conf in ${configs[@]}; do
+	for conf in ${configs[@]}; do
 
-			outfile=$timing_folder/$submission-$variant-$impl-$conf.txt
-			buildout=$temp_folder/$submission-$variant-$impl-$conf-bout.txt
-			builderr=$temp_folder/$submission-$variant-$impl-$conf-berr.txt
-			uploadout=$temp_folder/$submission-$variant-$impl-$conf-uout.txt
-			uploaderr=$temp_folder/$submission-$variant-$impl-$conf-uerr.txt
+		outfile=$timing_folder/$submission-$variant-$impl-$conf.txt
+		buildout=$temp_folder/$submission-$variant-$impl-$conf-bout.txt
+		builderr=$temp_folder/$submission-$variant-$impl-$conf-berr.txt
+		uploadout=$temp_folder/$submission-$variant-$impl-$conf-uout.txt
+		uploaderr=$temp_folder/$submission-$variant-$impl-$conf-uerr.txt
 
-			if [[ $prim == "aead" ]]; then
-				echo "#define LWC_MODE_TIMING_AEAD" > src/lwc_mode.h
-			elif [[ $prim == "hash" ]]; then
-				echo "#define LWC_MODE_TIMING_HASH" > src/lwc_mode.h
+		echo "#define LWC_MODE_TIMING" >src/lwc_mode.h
+
+		# if an output file already exists, do not overwrite it
+		if [[ $overwrite = false ]] && [[ -f $outfile ]]; then
+			print_warning "skipping implementation $impl with config $conf [output file exists]"
+		else
+			print_info "building implementation $impl with config $conf"
+
+			platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
+
+			if [[ "$?" -ne 0 ]]; then
+				print_error "build failed for $submission, $variant, $impl, $conf"
+				echo "build failed" >$outfile
 			fi
-
-			# if an output file already exists, do not overwrite it
-			if [[ $overwrite = false ]] && [[ -f $outfile ]]; then
-				print_warning "skipping implementation $impl with config $conf [output file exists]"
-			else
-				print_info "building implementation $impl with config $conf"
-
-				platformio$EXT run --verbose --environment $conf > $buildout 2> $builderr
+			if [[ "$EXT" == ".exe" ]]; then
+				platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
 
 				if [[ "$?" -ne 0 ]]; then
 					print_error "build failed for $submission, $variant, $impl, $conf"
-					echo "build failed" > $outfile
+					echo "build failed" >$outfile
+				else
+					stop_watch "uploading" 3
+					platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
+					sleep 3s
+					platformio$EXT device monitor >$outfile &
+					2>$temp_folder/serial_err.txt
+					PID=$!
+
+					wait_eof_marker
+
+					kill -9 $PID
 				fi
-				if [[ "$EXT" == ".exe" ]]; then
-					platformio$EXT run --verbose --environment $conf > $buildout 2> $builderr
+			else
+				platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
 
-					if [[ "$?" -ne 0 ]]; then
-						print_error "build failed for $submission, $variant, $impl, $conf"
-						echo "build failed" > $outfile
-					else
-                		stop_watch "uploading" 3
-                    	platformio$EXT run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
-                    	sleep 3s
-                    	platformio$EXT device monitor > $outfile& 2> $temp_folder/serial_err.txt
-                    	PID=$!
-
-                    	wait_eof_marker
-						
-                    	kill -9 $PID
-					fi
-                else
-					platformio$EXT run --verbose --environment $conf > $buildout 2> $builderr
-
-					if [[ "$?" -ne 0 ]]; then
-						print_error "build failed for $submission, $variant, $impl, $conf"
-						echo "build failed" > $outfile
-					else
-						stop_watch "uploading" 3
-						platformio$EXT run --verbose --target upload --environment $conf > $temp_folder/upload_out.txt 2> $temp_folder/upload_err.txt
-						sleep 3s
-						platformio$EXT device monitor --filter log2file 2> $temp_folder/serial_err.txt
-						logfile=$(ls -t platformio-device-monitor* | head -1)
-						echo $logfile
-						mv $logfile $outfile
-					fi
+				if [[ "$?" -ne 0 ]]; then
+					print_error "build failed for $submission, $variant, $impl, $conf"
+					echo "build failed" >$outfile
+				else
+					stop_watch "uploading" 3
+					platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
+					sleep 3s
+					platformio$EXT device monitor --filter log2file 2>$temp_folder/serial_err.txt
+					logfile=$(ls -t platformio-device-monitor* | head -1)
+					echo $logfile
+					mv $logfile $outfile
 				fi
 			fi
+		fi
 
-		done # conf
-
-
+	done # conf
 
 	print_info "-measure_timing()"
 
@@ -387,26 +365,13 @@ function measure_timing() {
 
 function update_variant_count {
 
-	if [[ $prim == "aead" ]]; then
-		NumAEADVariants=$(($NumAEADVariants + 1))
-	elif [[ $prim == "hash" ]]; then
-        NumHashVariants=$(($NumHashVariants + 1))
-    else
-        NumAEADVariants=$(($NumAEADVariants + 1))
-		NumHashVariants=$(($NumHashVariants + 1))
-	fi
+	NumVariants=$(($NumVariants + 1))
+
 }
 
 function update_implementation_count {
 
-	if [[ $prim == "aead" ]]; then
-		NumAEADImplementations=$(($NumAEADImplementations + 1))
-	elif [[ $prim == "hash" ]]; then
-        NumHashImplementations=$(($NumHashImplementations + 1))
-	else
-		NumAEADImplementations=$(($NumAEADImplementations + 1))
-        NumHashImplementations=$(($NumHashImplementations + 1))
-	fi
+	NumImplementations=$(($NumImplementations + 1))
 }
 
 # Returns non-zero if the implementation is compatible with the current target, zero otw.
@@ -415,10 +380,10 @@ function check_source_compatibility() {
 	impl_arch=""
 
 	local folder
-	
-	folder=$impl_folder/$submission/$prim_dir/$variant/$impl
 
-	if [[ -r "$folder/lwc_arch_avr" ]]; then 
+	folder=$impl_folder/$submission/$variant/$impl
+
+	if [[ -r "$folder/lwc_arch_avr" ]]; then
 		impl_arch="avr"
 	elif [[ -r "$folder/lwc_arch_armv6" ]]; then
 		impl_arch='armv6'
@@ -448,42 +413,31 @@ function check_source_compatibility() {
 	fi
 }
 
-
 # These variables keep track the number of items processed. The values are reported at the end of execution.
 NumSubmissions=0
-NumAEADVariants=0
-NumAEADImplementations=0
-NumHashVariants=0
-NumHashImplementations=0
+NumVariants=0
+NumImplementations=0
 
 # Global variables that control the processing of the implementations
 target=""
 experiments=""
-primitive_folders=""
 submissions=""
 variants=""
 implementations=""
-aead=false
-hash=false
-combined=false
 process_primary=false
 overwrite=false
 
 function print_usage() {
-	
+
 	echo "Usage: build.sh [-t | --target] target [options]
 		Options:
-		-t | --target <arg>     Target platform; one of {mkrzero, uno, nano33ble, nano_every, nodemcuv2, chipkit_mx3, dueUSB}.
+		-t | --target <arg>     Target platform; one of {l475vg}.
 		-e | --experiment <arg> Experiments to be performed; a subset of {kat, size, timing}.
 		-s | --submission <arg> List of submission names to be processed.
 		-v | --variant <arg>    List of variant names to be processed.
 		-i | --impl <arg>       List of implementation names to be processed.
-		-a | --aead             Process AEAD implementations.
-		-h | --hash             Process Hash implementations.
-		-c | --combined         Process Combined AEAD/Hash implementations.
 		-w | --overwrite        Do not skip an experiment if a result file already exists.
 		-p | --primary          Process only primary variants.
-src/lwc-benchmarking/outputs/dueUSB/kat/_reference_-aes-gcm-felicsv01-dueUSB-release-os-kat-err.txt src/lwc-benchmarking/outputs/dueUSB/kat/_reference_-aes-gcm-felicsv01-dueUSB-release-os-kat-build.txt
 	Note: If there are more than one arguments for -e, -s, -v, and -i, they must be provided 
 	      in double quotes and separated by space.
 	      Ex: -e \"kat size\"
@@ -495,34 +449,36 @@ function parse_args() {
 	while [[ -n "$1" ]]; do
 
 		case $1 in
-		-t | --target)		shift
-							target="$1"
-							;;
-		-e | --experiment)	shift
-							experiments="$1"
-							;;
-		-a | --aead)		aead=true
-							;;
-		-h | --hash)		hash=true
-							;;
-		-c | --combined)	combined=true
-							;;
-		-s | --submission)	shift
-							submissions="$submissions$1 "
-							;;
-		-v | --variant)		shift
-							variants="$1"
-							;;
-		-i | --impl)		shift
-							implementations="$1"
-							;;
-		-w | --overwrite)	overwrite=true
-							;;
-		-p | --primary)		process_primary=true
-							;;
-		*)					echo "error: unknown argument '$1'"
-							return 1
-							;;
+		-t | --target)
+			shift
+			target="$1"
+			;;
+		-e | --experiment)
+			shift
+			experiments="$1"
+			;;
+		-s | --submission)
+			shift
+			submissions="$submissions$1 "
+			;;
+		-v | --variant)
+			shift
+			variants="$1"
+			;;
+		-i | --impl)
+			shift
+			implementations="$1"
+			;;
+		-w | --overwrite)
+			overwrite=true
+			;;
+		-p | --primary)
+			process_primary=true
+			;;
+		*)
+			echo "error: unknown argument '$1'"
+			return 1
+			;;
 		esac
 		shift
 	done
@@ -535,7 +491,6 @@ parse_args "$@"
 if [[ $? -ne 0 ]]; then
 	exit 1
 fi
-
 
 # Target platform name must be specified
 if [[ -z $target ]]; then
@@ -571,25 +526,6 @@ else
 	done
 fi
 
-# Algorithm types
-if [[ $aead == true ]]; then
-	primitive_folders="$primitive_folders crypto_aead"
-fi
-
-if [[ $hash == true ]]; then
-	primitive_folders="$primitive_folders crypto_hash"
-fi
-
-if [[ $combined == true ]]; then
-	primitive_folders="$primitive_folders crypto_aead_hash"
-fi
-
-# If none specified, include all
-if [[ -z "$primitive_folders" ]]; then
-	primitive_folders="$primitive_folder_list"
-fi
-
-
 # Set the list of submissions to be processed
 # If no submission name is provided then all submission folders will be processed
 if [[ -z "$submissions" ]]; then
@@ -599,37 +535,21 @@ if [[ -z "$submissions" ]]; then
 	done
 fi
 
-
 # Print the variables
 echo "target            : $target"
 echo "configs           : $configs"
 echo "experiments       : $experiments"
-echo "aead              : $aead"
-echo "hash              : $hash"
-echo "primitive_folders : $primitive_folders"
 echo "submissions       : $submissions"
 echo "variants          : $variants"
 echo "implementations   : $implementations"
 echo "process_primary   : $process_primary"
 echo "overwrite         : $overwrite"
 
-
 # Supported ASM implementations by the target
 supported_impl=""
-if [[ "$target" == "mkrzero" ]]; then
-	supported_impl="armv6m"
-elif [[ "$target" == "uno" ]]; then
-	supported_impl="avr"
-elif [[ "$target" == "nano33ble" ]]; then
-	supported_impl="armv6 armv6m armv7m"
-elif [[ "$target" == "nano_every" ]]; then
-	supported_impl="avr"
-elif [[ "$target" == "nodemcuv2" ]]; then
-	supported_impl="esp"
-elif [[ "$target" == "dueUSB" ]]; then
-	supported_impl="armv6m armv7m armv67m"
+if [[ "$target" == "l475vg" ]]; then
+	supported_impl="armv7m"
 fi
-
 
 # Output folders
 out_folder="outputs/$target"
@@ -637,7 +557,6 @@ temp_folder="$out_folder/temp"
 kat_folder="$out_folder/kat"
 size_folder="$out_folder/size"
 timing_folder="$out_folder/timing"
-
 
 # Create output folders
 cd "$base_folder"
@@ -660,220 +579,187 @@ for submission in $submissions; do
 	print_info "processing $submission"
 	NumSubmissions=$(($NumSubmissions + 1))
 
-	for prim_dir in ${primitive_folders[@]}; do
+	cd $impl_folder/$submission
+
+	variants_to_process=""
+
+	# If no variant name is provided, process all
+	if [[ -z "$variants" ]]; then
+		for var in $(ls -d */ | sed 's|[/]||g'); do
+			variants_to_process="$variants_to_process$var "
+		done
+	else
+		variants_to_process=$variants
+	fi
+
+	for variant in ${variants_to_process[@]}; do
 
 		cd $impl_folder/$submission
 
-		if [ -d $prim_dir ]; then
+		if [ ! -d $variant ]; then
+			continue
+		fi
 
-			# Set primitive based variables for AEAD and Hash implementations
-			if [[ $prim_dir == "crypto_aead" ]]; then
-				prim="aead"
-				modes=$aead_modes
-				lwc_mode_genkat="#define LWC_MODE_GENKAT_AEAD"
-			elif [[ $prim_dir == "crypto_hash" ]]; then
-				prim="hash"
-				modes=$hash_modes
-				lwc_mode_genkat="#define LWC_MODE_GENKAT_HASH"
-			else
-				prim="aead_hash"
-				modes=$combined_modes
-				lwc_mode_genkat="#define LWC_MODE_GENKAT_COMBINED"
+		# Check skip list
+		includes $variant "${skip_variant[@]}"
+		skip=$?
+		if [[ $skip == 1 ]]; then
+			print_warning "skipping variant $variant"
+			continue
+		fi
+
+		if [ -f "$variant/primary" ]; then
+			is_primary=true
+		else
+			is_primary=false
+		fi
+
+		print_info "variant $variant is primary : $is_primary"
+
+		if [[ $process_primary = true ]] && [[ $is_primary = false ]]; then
+			print_warning "skipping non-primary variant $variant"
+			continue
+		fi
+
+		print_info "processing $prim variant $variant"
+
+		update_variant_count
+
+		cd $impl_folder/$submission/$variant
+
+		includes "kat" "${experiments[@]}"
+		process=$?
+
+		if [[ $process == 0 ]]; then
+			print_warning "skipping KAT verification"
+		else
+			# if combined mode, create combined KAT
+			if [ $variant != "empty" ] ; then
+				kat_file=$(ls LWC*.txt)
+				echo $kat_file
+				cat $kat_file >KAT_Ref.txt
+				kat_file_full_path="$impl_folder/$submission/$variant/KAT_Ref.txt"
 			fi
 
-			cd $impl_folder/$submission/$prim_dir
-
-			variants_to_process=""
-
-			# If no variant name is provided, process all
-			if [[ -z "$variants" ]]; then
-				for var in $(ls -d */ | sed 's|[/]||g'); do
-					variants_to_process="$variants_to_process$var "
-				done
+			# Proceed only if there's a KAT file to diff
+			echo $kat_file_full_path
+			if [ ! -f $kat_file_full_path ]; then
+				echo "KAT file not found for $submission $variant"
 			else
-				variants_to_process=$variants
+				verify_kat
+				retval=$?
+				print_info "verify_kat() returned $retval"
+			fi
+		fi
+
+		implementations_to_process=""
+
+		# If no implementation name is provided, process all
+		if [[ -z "$implementations" ]]; then
+			for impl in $(ls -d */ | sed 's|[/]||g'); do
+				implementations_to_process="$implementations_to_process$impl "
+			done
+		else
+			implementations_to_process=$implementations
+		fi
+
+		for impl in ${implementations_to_process[@]}; do
+
+			cd $impl_folder/$submission/$variant
+
+			if [ ! -d $impl ]; then
+				continue
 			fi
 
-			for variant in ${variants_to_process[@]}; do
+			# Check skip list
+			includes $impl "${skip_impl[@]}"
+			skip=$?
+			if [[ $skip == 1 ]]; then
+				print_warning "skipping implementation $impl"
+				continue
+			fi
 
-				cd $impl_folder/$submission/$prim_dir
+			# Check target compatibility
+			check_source_compatibility
+			if [[ $? -eq 0 ]]; then
+				print_warning "skipping implementation $impl [not target compatible]"
+				continue
+			fi
 
-				if [ ! -d $variant ]; then
-					continue
-				fi
+			print_info "processing implementation $impl"
 
-				# Check skip list
-				includes $variant "${skip_variant[@]}"
-				skip=$?
-				if [[ $skip == 1 ]]; then
-					print_warning "skipping variant $variant"
-					continue
-				fi
+			update_implementation_count
 
-				if [ -f "$variant/primary" ]; then
-					is_primary=true
+			# Copy implementation folder to src/iut
+			rm -rf $base_folder/src/iut/*
+			cp -r $impl_folder/$submission/$prim_dir/$variant/$impl $base_folder/src/iut
+
+			# If the implementation has lwc_constraints.h file, copy it to the src folder.
+			# Otherwise create an empty lwc_constraints.h file so that the compiler doesn't complain about not finding it.
+			constraints_file=$base_folder/src/iut/$impl/lwc_constraints.h
+			if [ -f $constraints_file ]; then
+				cp $constraints_file $base_folder/src
+			else
+				echo "" >$base_folder/src/lwc_constraints.h
+			fi
+
+			cd $base_folder
+
+			#
+			# Code Size
+			#
+			includes "size" "${experiments[@]}"
+			process=$?
+
+			if [[ $process == 0 ]]; then
+				print_warning "skipping code size measurements"
+			else
+				measure_code_size
+				retval=$?
+				print_info "measure_code_size() returned $retval"
+			fi
+
+			#
+			# KAT Verification
+			#
+			includes "kat" "${experiments[@]}"
+			process=$?
+
+			if [[ $process == 0 ]]; then
+				print_warning "skipping KAT verification"
+			else
+				# Proceed only if there's a KAT file to diff
+				echo $kat_file_full_path
+				if [ ! -f $kat_file_full_path ]; then
+					echo "KAT file not found for $submission $variant"
 				else
-					is_primary=false
+					verify_kat
+					retval=$?
+					print_info "verify_kat() returned $retval"
 				fi
+			fi
 
-				print_info "variant $variant is primary : $is_primary"
+			#
+			# Timings
+			#
+			includes "timing" "${experiments[@]}"
+			process=$?
 
-				if [[ $process_primary = true ]] && [[ $is_primary = false ]]; then
-					print_warning "skipping non-primary variant $variant"
-					continue
-				fi
+			if [[ $process == 0 ]]; then
+				print_warning "skipping timing measurements"
+			else
+				measure_timing
+				retval=$?
+				print_info "measure_timing() returned $retval"
+			fi
 
-				print_info "processing $prim variant $variant"
+		done # impl
 
-				update_variant_count
+	done # variant
 
-				cd $impl_folder/$submission/$prim_dir/$variant
-
-
-                
-                
-                includes "kat" "${experiments[@]}"
-                process=$?
-
-                if [[ $process == 0 ]]; then
-                    print_warning "skipping KAT verification"
-                else
-                    # if combined mode, create combined KAT
-                    if [ $variant != "empty_aead" ] && [ "$variant" != "empty_hash" ] && [ "$variant" != "empty_aead_hash" ]; then
-                        kat_file=$(ls LWC*.txt)
-                        echo $kat_file
-                        cat $kat_file > KAT_Ref.txt
-                        kat_file_full_path="$impl_folder/$submission/$prim_dir/$variant/KAT_Ref.txt"
-                    fi
-                
-                    # Proceed only if there's a KAT file to diff
-                    echo $kat_file_full_path
-                    if [ ! -f $kat_file_full_path ]; then
-                        echo "KAT file not found for $submission $variant"
-                    else
-                        verify_kat
-                        retval=$?
-                        print_info "verify_kat() returned $retval"
-                    fi
-                fi
-                
-
-				
-
-				implementations_to_process=""
-
-				# If no implementation name is provided, process all
-				if [[ -z "$implementations" ]]; then
-					for impl in $(ls -d */ | sed 's|[/]||g'); do
-						implementations_to_process="$implementations_to_process$impl "
-					done
-				else
-					implementations_to_process=$implementations
-				fi
-
-				for impl in ${implementations_to_process[@]};  do
-
-					cd $impl_folder/$submission/$prim_dir/$variant
-
-					if [ ! -d $impl ]; then
-						continue
-					fi
-
-					# Check skip list
-					includes $impl "${skip_impl[@]}"
-					skip=$?
-					if [[ $skip == 1 ]]; then
-						print_warning "skipping implementation $impl"
-						continue
-					fi
-
-					# Check target compatibility
-					check_source_compatibility 
-					if [[ $? -eq 0 ]]; then
-						print_warning "skipping implementation $impl [not target compatible]"
-						continue
-					fi
-
-					print_info "processing implementation $impl"
-
-					update_implementation_count
-
-					# Copy implementation folder to src/iut
-					rm -rf $base_folder/src/iut/*
-					cp -r $impl_folder/$submission/$prim_dir/$variant/$impl $base_folder/src/iut
-
-					# If the implementation has lwc_constraints.h file, copy it to the src folder.
-					# Otherwise create an empty lwc_constraints.h file so that the compiler doesn't complain about not finding it.
-					constraints_file=$base_folder/src/iut/$impl/lwc_constraints.h
-					if [ -f $constraints_file ]; then
-						cp $constraints_file $base_folder/src
-					else
-						echo "" > $base_folder/src/lwc_constraints.h
-					fi
-
-
-					cd $base_folder
-
-					#
-					# Code Size
-					#
-					includes "size" "${experiments[@]}"
-					process=$?
-
-					if [[ $process == 0 ]]; then
-						print_warning "skipping code size measurements"
-					else
-						measure_code_size
-						retval=$?
-						print_info "measure_code_size() returned $retval"
-					fi
-
-					#
-					# KAT Verification
-					#
-					includes "kat" "${experiments[@]}"
-					process=$?
-
-					if [[ $process == 0 ]]; then
-						print_warning "skipping KAT verification"
-					else
-						# Proceed only if there's a KAT file to diff
-						echo $kat_file_full_path
-						if [ ! -f $kat_file_full_path ]; then
-							echo "KAT file not found for $submission $variant"
-						else
-							verify_kat
-							retval=$?
-							print_info "verify_kat() returned $retval"
-						fi
-					fi
-
-					#
-					# Timings
-					#
-					includes "timing" "${experiments[@]}"
-					process=$?
-
-					if [[ $process == 0 ]]; then
-						print_warning "skipping timing measurements"
-					else
-						measure_timing
-						retval=$?
-						print_info "measure_timing() returned $retval"
-					fi
-
-				done # impl
-		
-			done # variant
-
-		fi # if prim_dir
-
-	done # prim_dir
-	
 done # submission
 
 cd $base_folder
 
 print_info "processed $NumSubmissions submissions"
-print_info "$NumAEADVariants AEAD variants, $NumAEADImplementations AEAD implementations"
-print_info "$NumHashVariants Hash variants, $NumHashImplementations Hash implementations"
+print_info "$NumVariants  variants, $NumImplementations  implementations"
