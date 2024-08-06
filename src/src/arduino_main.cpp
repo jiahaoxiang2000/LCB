@@ -61,7 +61,7 @@ void setup()
 
 #ifndef LWC_EXPERIMENT_SIZE
   // SOUT << "# lwc exit " << ret << SENDL;
-  // SOUT << "# lwc exit " << SENDL;
+  SOUT << "# lwc exit " << SENDL;
 #endif
 }
 
@@ -75,7 +75,9 @@ void loop()
 #if defined(LWC_PLATFORM_NODEMCUV2) && !defined(LWC_EXPERIMENT_SIZE)
   yield();
 #endif
-  Serial.println("LWC benchmark runing");
+
+  SOUT << "LWC benchmark runing" << SENDL;
+
   // turn the LED on (HIGH is the voltage level)
   digitalWrite(PE9, HIGH);
   // wait for a second
