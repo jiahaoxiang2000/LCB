@@ -174,9 +174,8 @@ function verify_kat() {
 			else
 
 				# Update mode header file
-				echo $lwc_mode_genkat >src/lwc_mode.h
-				echo $lwc_mode_genkat
-
+				echo "#define LWC_MODE_GENKAT_AEAD" >src/lwc_mode.h
+	
 				print_info "building implementation $impl with config $conf"
 				platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
 
@@ -249,42 +248,35 @@ function measure_code_size() {
 		infile="lwc_crypto.c"
 	fi
 
-	mv src/iut/$impl/$infile src/iut/$impl/lwc_crypto.in
+	for conf in ${configs[@]}; do
 
-	for mode in ${modes[@]}; do
+		outfile=$size_folder/$submission-$variant-$impl-$conf-out.txt
+		errfile=$size_folder/$submission-$variant-$impl-$conf-err.txt
 
-		for conf in ${configs[@]}; do
+		echo "#define LWC_MODE_USE_AEAD_ENCRYPT" >src/lwc_mode.h
 
-			outfile=$size_folder/$submission-$variant-$impl-$conf-$mode-out.txt
-			errfile=$size_folder/$submission-$variant-$impl-$conf-$mode-err.txt
+		# Skip if an output file exists
+		if [[ $overwrite = false ]] && [[ -f $outfile ]]; then
+			print_warning "skipping implementation $impl with config $conf [output file exists]"
+		else
 
-			echo "#define LWC_MODE_USE_$mode" >src/lwc_mode.h
+			printf "$submission,$variant,$impl,$conf,$mode" >>$out_folder/sizes_raw.txt
 
+			print_info "building implementation $impl with config $conf"
 
-			# Skip if an output file exists
-			if [[ $overwrite = false ]] && [[ -f $outfile ]]; then
-				print_warning "skipping implementation $impl with config $conf [output file exists]"
-			else
+			platformio$EXT run --verbose --environment $conf >$outfile 2>$errfile
 
-				printf "$submission,$variant,$impl,$conf,$mode" >>$out_folder/sizes_raw.txt
-
-				print_info "building implementation $impl with config $conf"
-
-				platformio$EXT run --verbose --environment $conf >$outfile 2>$errfile
-
-				if [[ "$?" -ne 0 ]]; then
-					print_error "build failed for $submission, $variant, $impl, $conf, $mode"
-					echo "build failed" >$outfile
-					printf ",error" >>$out_folder/sizes_raw.txt
-				fi
-
+			if [[ "$?" -ne 0 ]]; then
+				print_error "build failed for $submission, $variant, $impl, $conf, $mode"
+				echo "build failed" >$outfile
+				printf ",error" >>$out_folder/sizes_raw.txt
 			fi
 
-		done # conf
+			printf "\n" >>$out_folder/sizes_raw.txt
 
-	done # mode
+		fi
 
-	mv src/iut/$impl/lwc_crypto.in src/iut/$impl/$infile
+	done # conf
 
 	print_info "-measure_code_size()"
 
@@ -634,7 +626,7 @@ for submission in $submissions; do
 			print_warning "skipping KAT verification"
 		else
 			# if combined mode, create combined KAT
-			if [ $variant != "empty" ] ; then
+			if [ $variant != "empty" ]; then
 				kat_file=$(ls LWC*.txt)
 				echo $kat_file
 				cat $kat_file >KAT_Ref.txt

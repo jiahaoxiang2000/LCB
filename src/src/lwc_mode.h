@@ -1,0 +1,1 @@
+#define LWC_MODE_GENKAT_AEAD

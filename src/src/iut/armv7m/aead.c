@@ -1,6 +1,6 @@
 #include "api.h"
 #include "ascon.h"
-#include "crypto_aead.h"
+#include "cipher.h"
 #include "permutations.h"
 #include "printstate.h"
 
