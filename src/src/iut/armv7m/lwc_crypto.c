@@ -3,12 +3,12 @@
 
 
 aead_ctx lwc_aead_cipher = {
-	"ascon128v12",
+	"warp64v1",
 	"armv7m",
 	CRYPTO_KEYBYTES,
 	CRYPTO_NPUBBYTES,
 	CRYPTO_ABYTES,
-	crypto_aead_encrypt,
+	crypto_encrypt,
 	crypto_aead_decrypt
 };
 

@@ -11,210 +11,162 @@
 
 #ifdef ASCON_AEAD_RATE
 
-forceinline void ascon_loadkey(key_t* key, const uint8_t* k) {
-#if CRYPTO_KEYBYTES == 16
-  key->k1 = LOAD(k, 8);
-  key->k2 = LOAD(k + 8, 8);
-#else /* CRYPTO_KEYBYTES == 20 */
-  key->k0 = KEYROT(0, LOADBYTES(k, 4));
-  key->k1 = LOADBYTES(k + 4, 8);
-  key->k2 = LOADBYTES(k + 12, 8);
-#endif
+void sbox(uint32_t *r0, uint32_t *r1, uint32_t *r2, uint32_t *r3)
+{
+  uint32_t T[20] = {0};
+
+  // T_{0} =  X_{0} & X_{1}
+  T[0] = *r0 & *r1;
+  // T_{1} =  X_{0} & X_{2}
+  T[1] = *r0 & *r2;
+  // T_{2} =  X_{2} | T_{0}
+  T[2] = *r2 | T[0];
+  // T_{3} =  X_{0} | X_{3}
+  T[3] = *r0 | *r3;
+  // T_{4} =  X_{3} | X_{1}
+  T[4] = *r3 | *r1;
+  // T_{5} =  T_{2} & T_{3}
+  T[5] = T[2] & T[3];
+  // T_{6} =  T_{2} ^ T_{0}
+  T[6] = T[2] ^ T[0];
+  // T_{7} =  T_{4} & X_{0}
+  T[7] = T[4] & *r0;
+  // T_{8} =  X_{1} | T_{7}
+  T[8] = *r1 | T[7];
+  // T_{9} =  T_{7} ^ X_{1}
+  T[9] = T[7] ^ *r1;
+  // T_{10} = ~T_{0}
+  T[10] = ~T[0];
+  // T_{11} =  T_{4} ^ T_{0}
+  T[11] = T[4] ^ T[0];
+  // T_{12} =  T_{7} & X_{3}
+  T[12] = T[7] & *r3;
+  // T_{13} =  T_{9} & T_{3}
+  T[13] = T[9] & T[3];
+  // T_{14} =  T_{6} | T_{13}
+  T[14] = T[6] | T[13];
+  // T_{15} =  T_{8} & X_{2}
+  T[15] = T[8] & *r2;
+  // T_{16} = ~T_{5}
+  T[16] = ~T[5];
+  // T_{17} = ~T_{3}
+  T[17] = ~T[3];
+  // T_{18} =  T_{11} ^ T_{12}
+  T[18] = T[11] ^ T[12];
+  // T_{19} =  T_{15} | T_{17}
+  T[19] = T[15] | T[17];
+  // Y_{0} = T_{16}
+  *r0 = T[16];
+  // Y_{1} = T_{19}
+  *r1 = T[19];
+  // Y_{2} = T_{18}
+  *r2 = T[18];
+  // Y_{3} = T_{14}
+  *r3 = T[14];
 }
 
-forceinline void ascon_initaead(state_t* s, const uint8_t* npub,
-                                const key_t* key) {
-#if CRYPTO_KEYBYTES == 16
-  if (ASCON_AEAD_RATE == 8) s->x[0] = ASCON_128_IV;
-  if (ASCON_AEAD_RATE == 16) s->x[0] = ASCON_128A_IV;
-#else /* CRYPTO_KEYBYTES == 20 */
-  s->x[0] = ASCON_80PQ_IV ^ key->k0;
-#endif
-  s->x[1] = key->k1;
-  s->x[2] = key->k2;
-  s->x[3] = LOAD(npub, 8);
-  s->x[4] = LOAD(npub + 8, 8);
-  printstate("init 1st key xor", s);
-  P(s, 12);
-#if CRYPTO_KEYBYTES == 20
-  s->x[2] ^= key->k0;
-#endif
-  s->x[3] ^= key->k1;
-  s->x[4] ^= key->k2;
-  printstate("init 2nd key xor", s);
+// Function to perform right cyclic shift
+uint32_t right_cyclic_shift(uint32_t value, uint32_t shift)
+{
+  // Ensure the shift is within the range of 0 to 31
+  shift &= 31;
+  return (value >> shift) | (value << (32 - shift));
 }
 
-forceinline void ascon_adata(state_t* s, const uint8_t* ad, uint64_t adlen) {
-  const int nr = (ASCON_AEAD_RATE == 8) ? 6 : 8;
-  if (adlen) {
-    /* full associated data blocks */
-    while (adlen >= ASCON_AEAD_RATE) {
-      s->x[0] ^= LOAD(ad, 8);
-      if (ASCON_AEAD_RATE == 16) s->x[1] ^= LOAD(ad + 8, 8);
-      printstate("absorb adata", s);
-      P(s, nr);
-      ad += ASCON_AEAD_RATE;
-      adlen -= ASCON_AEAD_RATE;
-    }
-    /* final associated data block */
-    uint64_t* px = &s->x[0];
-    if (ASCON_AEAD_RATE == 16 && adlen >= 8) {
-      s->x[0] ^= LOAD(ad, 8);
-      px = &s->x[1];
-      ad += 8;
-      adlen -= 8;
-    }
-    *px ^= PAD(adlen);
-    if (adlen) *px ^= LOAD(ad, adlen);
-    printstate("pad adata", s);
-    P(s, nr);
+// Function to perform permutation in bitslicing
+void permutation_bitslicing(uint32_t *r0, uint32_t *r1, uint32_t *r2, uint32_t *r3, uint32_t shift[])
+{
+
+  uint32_t R0, R1, R2, R3;
+  R0 = 0;
+  R1 = 0;
+  R2 = 0;
+  R3 = 0;
+
+  for (int i = 0; i < 32; i++)
+  {
+    R0 |= right_cyclic_shift(*r0, shift[i]) & (1 << ((31 - i)));
+    R1 |= right_cyclic_shift(*r1, shift[i]) & (1 << ((31 - i)));
+    R2 |= right_cyclic_shift(*r2, shift[i]) & (1 << ((31 - i)));
+    R3 |= right_cyclic_shift(*r3, shift[i]) & (1 << ((31 - i)));
   }
-  /* domain separation */
-  s->x[4] ^= 1;
-  printstate("domain separation", s);
+  *r0 = R0;
+  *r1 = R1;
+  *r2 = R2;
+  *r3 = R3;
 }
 
-forceinline void ascon_encrypt(state_t* s, uint8_t* c, const uint8_t* m,
-                               uint64_t mlen) {
-  const int nr = (ASCON_AEAD_RATE == 8) ? 6 : 8;
-  /* full plaintext blocks */
-  while (mlen >= ASCON_AEAD_RATE) {
-    s->x[0] ^= LOAD(m, 8);
-    STORE(c, s->x[0], 8);
-    if (ASCON_AEAD_RATE == 16) {
-      s->x[1] ^= LOAD(m + 8, 8);
-      STORE(c + 8, s->x[1], 8);
-    }
-    printstate("absorb plaintext", s);
-    P(s, nr);
-    m += ASCON_AEAD_RATE;
-    c += ASCON_AEAD_RATE;
-    mlen -= ASCON_AEAD_RATE;
-  }
-  /* final plaintext block */
-  uint64_t* px = &s->x[0];
-  if (ASCON_AEAD_RATE == 16 && mlen >= 8) {
-    s->x[0] ^= LOAD(m, 8);
-    STORE(c, s->x[0], 8);
-    px = &s->x[1];
-    m += 8;
-    c += 8;
-    mlen -= 8;
-  }
-  *px ^= PAD(mlen);
-  if (mlen) {
-    *px ^= LOAD(m, mlen);
-    STORE(c, *px, mlen);
-  }
-  printstate("pad plaintext", s);
-}
+uint32_t ks[] = {0x5555, 0x10550055, 0x5050505, 0x11111111, 0x45550000, 0x45005500, 0x50505050, 0x44444444, 0x10005555, 0x10550055, 0x5050505, 0x51111111, 0x45550000, 0x45005500, 0x10505050, 0x4444444, 0x10005555, 0x50550055, 0x45050505, 0x51111111, 0x5550000, 0x5005500, 0x10505050, 0x4444444, 0x50005555, 0x40550055, 0x45050505, 0x51111111, 0x15550000, 0x5005500, 0x10505050, 0x4444444, 0x50005555, 0x40550055, 0x45050505, 0x11111111, 0x15550000, 0x5005500, 0x50505050, 0x4444444, 0x50005555, 0x550055, 0x45050505, 0x11111111, 0x55550000, 0x5005500, 0x50505050, 0x4444444, 0x50005555, 0x10550055, 0x45050505, 0x11111111, 0x45550000, 0x15005500, 0x50505050, 0x4444444, 0x40005555, 0x550055, 0x45050505, 0x51111111, 0x55550000, 0x5005500, 0x10505050, 0x44444444, 0x50005555, 0x50550055, 0x5050505, 0x11111111, 0x5550000, 0x55005500, 0x50505050, 0x4444444, 0x5555, 0x10550055, 0x45050505, 0x51111111, 0x45550000, 0x5005500, 0x10505050, 0x44444444, 0x50005555, 0x50550055, 0x5050505, 0x51111111, 0x5550000, 0x55005500, 0x10505050, 0x4444444, 0x5555, 0x50550055, 0x45050505, 0x51111111, 0x5550000, 0x5005500, 0x10505050, 0x44444444, 0x50005555, 0x40550055, 0x5050505, 0x51111111, 0x15550000, 0x45005500, 0x10505050, 0x4444444, 0x10005555, 0x40550055, 0x45050505, 0x11111111, 0x15550000, 0x15005500, 0x50505050, 0x4444444, 0x40005555, 0x10550055, 0x45050505, 0x11111111, 0x45550000, 0x15005500, 0x50505050, 0x44444444, 0x40005555, 0x550055, 0x5050505, 0x51111111, 0x55550000, 0x45005500, 0x10505050, 0x44444444, 0x10005555, 0x50550055, 0x5050505, 0x11111111, 0x5550000, 0x45005500, 0x50505050, 0x4444444, 0x10005555, 0x550055, 0x45050505, 0x51111111, 0x55550000, 0x15005500, 0x10505050, 0x4444444, 0x40005555, 0x40550055, 0x45050505, 0x11111111, 0x15550000, 0x5005500, 0x50505050, 0x44444444, 0x50005555, 0x550055, 0x5050505, 0x11111111, 0x55550000, 0x45005500, 0x50505050, 0x4444444, 0x10005555, 0x10550055, 0x45050505, 0x11111111};
 
-forceinline void ascon_decrypt(state_t* s, uint8_t* m, const uint8_t* c,
-                               uint64_t clen) {
-  const int nr = (ASCON_AEAD_RATE == 8) ? 6 : 8;
-  /* full ciphertext blocks */
-  while (clen >= ASCON_AEAD_RATE) {
-    uint64_t cx = LOAD(c, 8);
-    s->x[0] ^= cx;
-    STORE(m, s->x[0], 8);
-    s->x[0] = cx;
-    if (ASCON_AEAD_RATE == 16) {
-      cx = LOAD(c + 8, 8);
-      s->x[1] ^= cx;
-      STORE(m + 8, s->x[1], 8);
-      s->x[1] = cx;
-    }
-    printstate("insert ciphertext", s);
-    P(s, nr);
-    m += ASCON_AEAD_RATE;
-    c += ASCON_AEAD_RATE;
-    clen -= ASCON_AEAD_RATE;
-  }
-  /* final ciphertext block */
-  uint64_t* px = &s->x[0];
-  if (ASCON_AEAD_RATE == 16 && clen >= 8) {
-    uint64_t cx = LOAD(c, 8);
-    s->x[0] ^= cx;
-    STORE(m, s->x[0], 8);
-    s->x[0] = cx;
-    px = &s->x[1];
-    m += 8;
-    c += 8;
-    clen -= 8;
-  }
-  *px ^= PAD(clen);
-  if (clen) {
-    uint64_t cx = LOAD(c, clen);
-    *px ^= cx;
-    STORE(m, *px, clen);
-    *px = CLEAR(*px, clen);
-    *px ^= cx;
-  }
-  printstate("pad ciphertext", s);
-}
+int crypto_encrypt(unsigned char *c,
+                   const unsigned char *m, unsigned long long mlen,
 
-forceinline void ascon_final(state_t* s, const key_t* key) {
-#if CRYPTO_KEYBYTES == 16
-  if (ASCON_AEAD_RATE == 8) {
-    s->x[1] ^= key->k1;
-    s->x[2] ^= key->k2;
-  } else {
-    s->x[2] ^= key->k1;
-    s->x[3] ^= key->k2;
-  }
-#else /* CRYPTO_KEYBYTES == 20 */
-  s->x[1] ^= KEYROT(key->k0, key->k1);
-  s->x[2] ^= KEYROT(key->k1, key->k2);
-  s->x[3] ^= KEYROT(key->k2, 0);
-#endif
-  printstate("final 1st key xor", s);
-  P(s, 12);
-  s->x[3] ^= key->k1;
-  s->x[4] ^= key->k2;
-  printstate("final 2nd key xor", s);
-}
+                   const unsigned char *k)
+{
 
-int crypto_aead_encrypt(unsigned char* c, unsigned long long* clen,
-                        const unsigned char* m, unsigned long long mlen,
-                        const unsigned char* ad, unsigned long long adlen,
-                        const unsigned char* nsec, const unsigned char* npub,
-                        const unsigned char* k) {
-  state_t s;
-  (void)nsec;
-  *clen = mlen + CRYPTO_ABYTES;
-  /* perform ascon computation */
-  key_t key;
-  ascon_loadkey(&key, k);
-  ascon_initaead(&s, npub, &key);
-  ascon_adata(&s, ad, adlen);
-  ascon_encrypt(&s, c, m, mlen);
-  ascon_final(&s, &key);
-  /* set tag */
-  STOREBYTES(c + mlen, s.x[3], 8);
-  STOREBYTES(c + mlen + 8, s.x[4], 8);
+  uint32_t r0, r1, r2, r3;
+  uint32_t p_shift[] = {21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31, 21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31};
+  r0 = 0xffff00;
+  r1 = 0xf0ff0f0;
+  r2 = 0x3333cccc;
+  r3 = 0x5555aaaa;
+  uint32_t t0, t1, t2, t3;
+  for (size_t r = 0; r < 40; r++)
+  {
+    t0 = r0 & 0xAAAAAAAA;
+    t1 = r1 & 0xAAAAAAAA;
+    t2 = r2 & 0xAAAAAAAA;
+    t3 = r3 & 0xAAAAAAAA;
+    sbox(&t0, &t1, &t2, &t3);
+    t0 = (t0 >> 1) & 0x55555555;
+    t1 = (t1 >> 1) & 0x55555555;
+    t2 = (t2 >> 1) & 0x55555555;
+    t3 = (t3 >> 1) & 0x55555555;
+    r0 ^= t0 ^ ks[r * 4 + 0];
+    r1 ^= t1 ^ ks[r * 4 + 1];
+    r2 ^= t2 ^ ks[r * 4 + 2];
+    r3 ^= t3 ^ ks[r * 4 + 3];
+    permutation_bitslicing(&r0, &r1, &r2, &r3, p_shift);
+  }
+  t0 = r0 & 0xAAAAAAAA;
+  t1 = r1 & 0xAAAAAAAA;
+  t2 = r2 & 0xAAAAAAAA;
+  t3 = r3 & 0xAAAAAAAA;
+  sbox(&t0, &t1, &t2, &t3);
+  t0 = (t0 >> 1) & 0x55555555;
+  t1 = (t1 >> 1) & 0x55555555;
+  t2 = (t2 >> 1) & 0x55555555;
+  t3 = (t3 >> 1) & 0x55555555;
+  r0 ^= t0 ^ ks[40 * 4 + 0];
+  r1 ^= t1 ^ ks[40 * 4 + 1];
+  r2 ^= t2 ^ ks[40 * 4 + 2];
+  r3 ^= t3 ^ ks[40 * 4 + 3];
   return 0;
 }
 
-int crypto_aead_decrypt(unsigned char* m, unsigned long long* mlen,
-                        unsigned char* nsec, const unsigned char* c,
-                        unsigned long long clen, const unsigned char* ad,
-                        unsigned long long adlen, const unsigned char* npub,
-                        const unsigned char* k) {
-  state_t s;
-  (void)nsec;
-  if (clen < CRYPTO_ABYTES) return -1;
-  *mlen = clen = clen - CRYPTO_ABYTES;
-  /* perform ascon computation */
-  key_t key;
-  ascon_loadkey(&key, k);
-  ascon_initaead(&s, npub, &key);
-  ascon_adata(&s, ad, adlen);
-  ascon_decrypt(&s, m, c, clen);
-  ascon_final(&s, &key);
-  /* verify tag (should be constant time, check compiler output) */
-  s.x[3] ^= LOADBYTES(c + clen, 8);
-  s.x[4] ^= LOADBYTES(c + clen + 8, 8);
-  return NOTZERO(s.x[3], s.x[4]);
+int crypto_aead_decrypt(unsigned char *m, unsigned long long *mlen,
+                        unsigned char *nsec, const unsigned char *c,
+                        unsigned long long clen, const unsigned char *ad,
+                        unsigned long long adlen, const unsigned char *npub,
+                        const unsigned char *k)
+{
+  // state_t s;
+  // (void)nsec;
+  // if (clen < CRYPTO_ABYTES)
+  //   return -1;
+  // *mlen = clen = clen - CRYPTO_ABYTES;
+  // /* perform ascon computation */
+  // key_t key;
+  // ascon_loadkey(&key, k);
+  // ascon_initaead(&s, npub, &key);
+  // ascon_adata(&s, ad, adlen);
+  // ascon_decrypt(&s, m, c, clen);
+  // ascon_final(&s, &key);
+  // /* verify tag (should be constant time, check compiler output) */
+  // s.x[3] ^= LOADBYTES(c + clen, 8);
+  // s.x[4] ^= LOADBYTES(c + clen + 8, 8);
+  // return NOTZERO(s.x[3], s.x[4]);
+  return 0;
 }
 
 #endif

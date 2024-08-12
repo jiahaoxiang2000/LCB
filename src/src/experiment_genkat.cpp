@@ -87,7 +87,7 @@ int genkat_aead()
 			ad.print_hex("AD = ", adlen);
 
 			if ((func_ret = lwc_aead_cipher.encrypt(ct.data(), &clen, msg.data(), mlen, ad.data(), adlen, NULL, nonce.data(), key.data())) != 0) {
-				SOUT << "crypto_aead_encrypt returned " << func_ret << SENDL;
+				SOUT << "crypto_encrypt returned " << func_ret << SENDL;
 				ret_val = KAT_CRYPTO_FAILURE;
 				break;
 			}

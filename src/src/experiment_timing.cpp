@@ -148,18 +148,17 @@ void print_benchmark_info(const Cipher &cipher)
 
 #ifdef LWC_MODE_TIMING_AEAD
 
-template <class Timer, int Trials, typename ADRange, typename MsgRange>
-int benchmark_aead(const aead_ctx &cipher, ADRange adrange, MsgRange msgrange, bool verbose = false)
+template <class Timer, int Trials>
+int benchmark_one_block(const aead_ctx &cipher, bool verbose = false)
 {
-    
 
     const int MaxKeyBytes = 32;
     const int MaxNonceBytes = 32;
     const int MaxABytes = 32;
 
-    buffer<msgrange.end()> msg;
-    buffer<msgrange.end() + MaxABytes> ct;
-    buffer<adrange.end()> ad;
+    buffer<8> msg;
+    buffer<8> ct;
+    buffer<8> ad;
     buffer<MaxKeyBytes> key;
     buffer<MaxNonceBytes> nonce;
     buffer<Trials, uint32_t> elapsedEnc, elapsedDec;
@@ -180,7 +179,7 @@ int benchmark_aead(const aead_ctx &cipher, ADRange adrange, MsgRange msgrange, b
         {
             Timer tm(elapsedEnc[i]);
 
-            fret = cipher.encrypt(ct.data(), &clen, msg.data(), 0, ad.data(), 256, nullptr, nonce.data(), key.data());
+            fret = cipher.encrypt(ct.data(), msg.data(), 8, key.data());
         }
 
         if (fret != 0)
@@ -255,10 +254,8 @@ int timing_experiments()
     int ret{0};
 
     {
-        // Test case : Empty Message, Long AD
-        auto adrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
-        auto msgrange = LinearRange<0, 0, 1>();
-        ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
+        // Test case : one block cipher
+        ret |= benchmark_one_block<timer, Trials>(lwc_aead_cipher, false);
     }
 
     return ret;

@@ -47,7 +47,7 @@ int use_aead()
 
 #if defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
 	ret = lwc_aead_cipher.encrypt(buf.data(), &len, nullptr, 0, nullptr, 0, nullptr, nonce.data(), key.data());
-	//SOUT << "crypto_aead_encrypt() returned " << ret << SENDL;
+	//SOUT << "crypto_encrypt() returned " << ret << SENDL;
 #endif // LWC_MODE_USE_AEAD_ENCRYPT
 
 #if defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
