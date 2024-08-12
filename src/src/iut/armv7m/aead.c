@@ -3,6 +3,7 @@
 #include "cipher.h"
 #include "permutations.h"
 #include "printstate.h"
+#include "warp_bitslicing.h"
 
 #if !ASCON_INLINE_MODE
 #undef forceinline
@@ -105,42 +106,15 @@ int crypto_encrypt(unsigned char *c,
 {
 
   uint32_t r0, r1, r2, r3;
-  uint32_t p_shift[] = {21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31, 21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31};
-  r0 = 0xffff00;
-  r1 = 0xf0ff0f0;
-  r2 = 0x3333cccc;
-  r3 = 0x5555aaaa;
-  uint32_t t0, t1, t2, t3;
-  for (size_t r = 0; r < 40; r++)
-  {
-    t0 = r0 & 0xAAAAAAAA;
-    t1 = r1 & 0xAAAAAAAA;
-    t2 = r2 & 0xAAAAAAAA;
-    t3 = r3 & 0xAAAAAAAA;
-    sbox(&t0, &t1, &t2, &t3);
-    t0 = (t0 >> 1) & 0x55555555;
-    t1 = (t1 >> 1) & 0x55555555;
-    t2 = (t2 >> 1) & 0x55555555;
-    t3 = (t3 >> 1) & 0x55555555;
-    r0 ^= t0 ^ ks[r * 4 + 0];
-    r1 ^= t1 ^ ks[r * 4 + 1];
-    r2 ^= t2 ^ ks[r * 4 + 2];
-    r3 ^= t3 ^ ks[r * 4 + 3];
-    permutation_bitslicing(&r0, &r1, &r2, &r3, p_shift);
-  }
-  t0 = r0 & 0xAAAAAAAA;
-  t1 = r1 & 0xAAAAAAAA;
-  t2 = r2 & 0xAAAAAAAA;
-  t3 = r3 & 0xAAAAAAAA;
-  sbox(&t0, &t1, &t2, &t3);
-  t0 = (t0 >> 1) & 0x55555555;
-  t1 = (t1 >> 1) & 0x55555555;
-  t2 = (t2 >> 1) & 0x55555555;
-  t3 = (t3 >> 1) & 0x55555555;
-  r0 ^= t0 ^ ks[40 * 4 + 0];
-  r1 ^= t1 ^ ks[40 * 4 + 1];
-  r2 ^= t2 ^ ks[40 * 4 + 2];
-  r3 ^= t3 ^ ks[40 * 4 + 3];
+  r0 = 0xffff;
+  r1 = 0xff00ff;
+  r2 = 0xf0f0f0f;
+  r3 = 0x33333333;
+  warp_bitslicing();
+  // c[0] = warp_rs[0];
+  // c[1] = warp_rs[1];
+  // c[2] = warp_rs[2];
+  // c[3] = warp_rs[3];
   return 0;
 }
 
