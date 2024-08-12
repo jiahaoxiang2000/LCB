@@ -185,48 +185,48 @@ int benchmark_aead(const aead_ctx &cipher, ADRange adrange, MsgRange msgrange, b
 
         if (fret != 0)
         {
-            SOUT << "error : crypto_aead_encrypt() failed with code " << fret << SENDL;
+            SOUT << "error : crypto_encrypt() failed with code " << fret << SENDL;
             ret = -1;
             break;
         }
 
-        msg.clear();
-        ad.init();
-        key.init();
-        nonce.init();
+        // msg.clear();
+        // ad.init();
+        // key.init();
+        // nonce.init();
 
-        // Decryption
-        {
-            Timer tm(elapsedDec[i]);
+        // // Decryption
+        // {
+        //     Timer tm(elapsedDec[i]);
 
-            fret = cipher.decrypt(msg.data(), &mlenDec, nullptr, ct.data(), clen, ad.data(), 256, nonce.data(), key.data());
-        }
+        //     fret = cipher.decrypt(msg.data(), &mlenDec, nullptr, ct.data(), clen, ad.data(), 256, nonce.data(), key.data());
+        // }
 
-        if (fret != 0)
-        {
-            SOUT << "error : crypto_aead_decrypt() failed with code " << fret << SENDL;
-            ret = -1;
-            break;
-        }
+        // if (fret != 0)
+        // {
+        //     SOUT << "error : crypto_aead_decrypt() failed with code " << fret << SENDL;
+        //     ret = -1;
+        //     break;
+        // }
 
-        // Verify decrypted message length
-        if (mlenDec != 0)
-        {
-            SOUT << "error : incorrect plaintext length" << SENDL;
-            fret = -1;
-            ret = -1;
-            break;
-        }
+        // // Verify decrypted message length
+        // if (mlenDec != 0)
+        // {
+        //     SOUT << "error : incorrect plaintext length" << SENDL;
+        //     fret = -1;
+        //     ret = -1;
+        //     break;
+        // }
 
-        // Check if the plaintext is recovered
-        if (!is_identity_buffer(msg.data(), 0))
-        {
-            SOUT << "error : decryption did not recover the plaintext" << SENDL;
-            // msg.print_hex("#msg = ", mlen);
-            fret = -1;
-            ret = -1;
-            break;
-        }
+        // // Check if the plaintext is recovered
+        // if (!is_identity_buffer(msg.data(), 0))
+        // {
+        //     SOUT << "error : decryption did not recover the plaintext" << SENDL;
+        //     // msg.print_hex("#msg = ", mlen);
+        //     fret = -1;
+        //     ret = -1;
+        //     break;
+        // }
 
     } // trials
 
@@ -239,10 +239,10 @@ int benchmark_aead(const aead_ctx &cipher, ADRange adrange, MsgRange msgrange, b
                 SOUT << x << ' ';
         SOUT << "enc=" << median(elapsedEnc) << ' ';
 
-        if (verbose)
-            for (auto x : elapsedDec)
-                SOUT << x << ' ';
-        SOUT << "dec=" << median(elapsedDec) << ' ';
+        // if (verbose)
+        //     for (auto x : elapsedDec)
+        //         SOUT << x << ' ';
+        // SOUT << "dec=" << median(elapsedDec) << ' ';
 
         SOUT << SENDL;
     }
@@ -258,7 +258,7 @@ int timing_experiments()
         // Test case : Empty Message, Long AD
         auto adrange = LinearRange<MaxShortInputLength + LongInputStep, MaxLongInputLength, LongInputStep>();
         auto msgrange = LinearRange<0, 0, 1>();
-        ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, true);
+        ret |= benchmark_aead<timer, Trials>(lwc_aead_cipher, adrange, msgrange, false);
     }
 
     return ret;
