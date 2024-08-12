@@ -53,28 +53,18 @@ void setup()
 
   // Wait for a few seconds before running the experiments in order to allow
   // enonugh time for opening the terminal window if run from the IDE
-  stop_watch(5);
+  stop_watch(1);
 #endif
 
   int ret = do_experiments();
 
 #ifndef LWC_EXPERIMENT_SIZE
-  // SOUT << "# lwc exit " << ret << SENDL;
-  SOUT << "# lwc exit " << SENDL;
+  SOUT << "# lCB exit " << SENDL;
 #endif
 }
 
 void loop()
 {
-// Don't use IO for size experiments to reduce the overall size of the binary
-#ifndef LWC_EXPERIMENT_SIZE
-  // This loop just blinks.
-  // It visually signals that the setup() function has completed.
-
-#if defined(LWC_PLATFORM_NODEMCUV2) && !defined(LWC_EXPERIMENT_SIZE)
-  yield();
-#endif
-
   // turn the LED on (HIGH is the voltage level)
   digitalWrite(PE9, HIGH);
   // wait for a second
@@ -83,5 +73,4 @@ void loop()
   digitalWrite(PE9, LOW);
   // wait for a second
   delay(1000);
-#endif
 }

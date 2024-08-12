@@ -56,22 +56,8 @@ void stop_watch(int seconds, const char *caption)
 
 const char* get_platform_name()
 {
-    #if defined (LWC_PLATFORM_MKRZERO)
-        return "mkrzero";
-    #elif defined (LWC_PLATFORM_NANO33BLE)
-        return "nano33ble";
-    #elif defined (LWC_PLATFORM_NANOEVERY)
-        return "nanoevery";
-    #elif defined (LWC_PLATFORM_UNO)
-        return "uno";
-    #elif defined(LWC_PLATFORM_NODEMCUV2)
-        return "nodemcuv2";
-    #elif defined(LWC_PLATFORM_PIC32MX3)
-        return "pic32mx";
-    #elif defined(LWC_PLATFORM_PIC32U32)
-        return "pic32uc32";
-    #elif defined(LWC_PLATFORM_DUEUSB)
-        return "dueUSB";
+    #if defined (LWC_PLATFORM_l475vg)
+        return "l475vg";
     #else
         return "Unknown platform";
     #endif

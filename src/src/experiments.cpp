@@ -45,7 +45,7 @@ int do_experiments()
 
     ret = do_genkat_experiments();
 
-#elif defined(LWC_EXPERIMENT_TIMING)
+#elif defined(LBC_EXPERIMENT_TIMING)
 
     ret = do_timing_experiments();
 
