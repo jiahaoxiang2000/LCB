@@ -6,7 +6,7 @@
  - [Visual Studio Code](https://code.visualstudio.com/) This is optional but quite handy if you want to work with an IDE. After installing the PlatformIO extension, you can also install the board and platform files from the IDE for the microcontrollers, which will be required to build the applications.
   - For batch processing with the build script, the implementations must be in a folder named `implementations` that is two levels above this folder. If you clone the repository, the implementations will be in the correct location.
 
-The benchmarking framework was developed and tested on Windows 10. It does not use a Windows specific feature, though. So, in principle you might be able to use it by meeting the above requirements. You can let us know if you have (or don't have) any issues on different platforms.
+The benchmarking framework was developed and tested on Windows 10 for the NIST. It does not use a Windows specific feature, though. Now we modified the framework to work on Linux as well. 
 
 ## Experiments and Operating Modes
 

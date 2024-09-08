@@ -39,7 +39,7 @@ EXT="" # Mac, Linux
 platform_list=("l475vg")
 
 # List of experiments to be performed
-experiment_list=("size kat timing")
+experiment_list=("size timing")
 
 # The list of submission names to be omitted from processing
 skip_submission=("")
