@@ -29,8 +29,8 @@
 // copyright protection within the United States.
 //
 
-#ifndef LWC_CRYPTO_AEAD_H
-#define LWC_CRYPTO_AEAD_H
+#ifndef LCB_CRYPTO_H
+#define LCB_CRYPTO_H
 
 #ifdef __cplusplus
 extern "C"
@@ -42,12 +42,9 @@ extern "C"
 		const unsigned char *m, unsigned long long mlen,
 		const unsigned char *k);
 
-	typedef int (*fn_aead_decrypt)(
-		unsigned char *m, unsigned long long *mlen,
-		unsigned char *nsec,
+	typedef int (*fn_decrypt)(
+		unsigned char *m,
 		const unsigned char *c, unsigned long long clen,
-		const unsigned char *ad, unsigned long long adlen,
-		const unsigned char *npub,
 		const unsigned char *k);
 
 	typedef struct
@@ -55,10 +52,8 @@ extern "C"
 		const char *variant_name;
 		const char *impl_name;
 		int KeyBytes;
-		int NonceBytes;
-		int ABytes;
 		fn_encrypt encrypt;
-		fn_aead_decrypt decrypt;
+		fn_decrypt decrypt;
 
 	} aead_ctx;
 
@@ -69,16 +64,13 @@ extern "C"
 		const unsigned char *m, unsigned long long mlen,
 		const unsigned char *k);
 
-	int crypto_aead_decrypt(
-		unsigned char *m, unsigned long long *mlen,
-		unsigned char *nsec,
+	int crypto_decrypt(
+		unsigned char *m,
 		const unsigned char *c, unsigned long long clen,
-		const unsigned char *ad, unsigned long long adlen,
-		const unsigned char *npub,
 		const unsigned char *k);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // LWC_CRYPTO_AEAD_H
+#endif // LCB_CRYPTO_H

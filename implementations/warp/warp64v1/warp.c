@@ -1,16 +1,9 @@
 #include "api.h"
-#include "ascon.h"
+
 #include "cipher.h"
-#include "permutations.h"
-#include "printstate.h"
 #include "warp_bitslicing.h"
 
-#if !ASCON_INLINE_MODE
-#undef forceinline
-#define forceinline
-#endif
 
-#ifdef ASCON_AEAD_RATE
 
 void sbox(uint32_t *r0, uint32_t *r1, uint32_t *r2, uint32_t *r3)
 {
@@ -118,11 +111,9 @@ int crypto_encrypt(unsigned char *c,
   return 0;
 }
 
-int crypto_aead_decrypt(unsigned char *m, unsigned long long *mlen,
-                        unsigned char *nsec, const unsigned char *c,
-                        unsigned long long clen, const unsigned char *ad,
-                        unsigned long long adlen, const unsigned char *npub,
-                        const unsigned char *k)
+int crypto_decrypt(unsigned char *m,
+		const unsigned char *c, unsigned long long clen,
+		const unsigned char *k)
 {
   // state_t s;
   // (void)nsec;
@@ -143,4 +134,4 @@ int crypto_aead_decrypt(unsigned char *m, unsigned long long *mlen,
   return 0;
 }
 
-#endif
+

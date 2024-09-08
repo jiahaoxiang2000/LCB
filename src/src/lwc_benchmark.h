@@ -65,7 +65,7 @@
 #endif
 
 
-#include "lwc_crypto_aead.h"
+#include "lcb_crypto.h"
 #include "lwc_crypto_hash.h"
 #include "experiments.h"
 #include "timers.h"
