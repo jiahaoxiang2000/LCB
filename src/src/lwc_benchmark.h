@@ -34,18 +34,15 @@
 #include "lwc_mode.h"
 
 // Ensure that an operating mode is defined
-#if !defined(LWC_MODE_GENKAT_AEAD) && !defined(LWC_MODE_GENKAT_HASH) && !defined(LWC_MODE_GENKAT_COMBINED) && \
-    !defined(LWC_MODE_TIMING_AEAD) && !defined(LWC_MODE_TIMING_HASH) && \
-    !defined(LWC_MODE_USE_AEAD_ENCRYPT) && !defined(LWC_MODE_USE_AEAD_DECRYPT) && !defined(LWC_MODE_USE_AEAD_BOTH) && !defined(LWC_MODE_USE_HASH) && !defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) && !defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) && !defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
+#if !defined(LWC_MODE_TIMING) && !defined(LWC_MODE_TIMING_HASH) && \
+    !defined(LWC_MODE_USE_ENCRYPT) && !defined(LWC_MODE_USE_DECRYPT) && !defined(LWC_MODE_USE_BOTH)
 
 #error No mode is defined in lwc_mode.h
 
 #endif
 
 // Define experiment type based on the mode
-#if defined(LWC_MODE_GENKAT_AEAD) || defined(LWC_MODE_GENKAT_HASH) || defined(LWC_MODE_GENKAT_COMBINED)
-    #define LWC_EXPERIMENT_GENKAT
-#elif defined(LWC_MODE_TIMING_AEAD) || defined(LWC_MODE_TIMING_HASH)
+#if defined(LWC_MODE_TIMING) || defined(LWC_MODE_TIMING_HASH)
     #define LBC_EXPERIMENT_TIMING
 #elif defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_HASH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
     #define LWC_EXPERIMENT_SIZE

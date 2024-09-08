@@ -1,0 +1,32 @@
+
+5 seconds
+4 seconds
+3 seconds
+2 seconds
+1 seconds
+# Cipher Benchmarking
+platform = l475vg
+config = O3
+build time = Sep  8 2024 - 21:52:48
+variant = warp64v1
+impl = armv7m-c
+timer = systick
+
+enc=42132 
+# lCB exit 
+
+5 seconds
+4 seconds
+3 seconds
+2 seconds
+1 seconds
+# Cipher Benchmarking
+platform = l475vg
+config = O3
+build time = Sep  8 2024 - 21:52:48
+variant = warp64v1
+impl = armv7m-c
+timer = systick
+
+enc=42132 
+# lCB exit 

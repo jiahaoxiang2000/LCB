@@ -59,15 +59,6 @@ int use_aead()
 }
 #endif // defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT)
 
-#if defined(LWC_MODE_USE_HASH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-int use_hash()
-{
-	buffer<32> digest;
-	int ret = lwc_hash_ctx.hash(digest.data(), nullptr, 0);
-	//SOUT << "crypto_hash() returned " << ret << SENDL;
-	return ret;
-}
-#endif // LWC_MODE_USE_HASH
 
 
 
@@ -79,9 +70,6 @@ int do_size_experiments()
 	ret = use_aead();
 #endif
 
-#if defined(LWC_MODE_USE_HASH) ||  defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-	ret = use_hash();
-#endif
 
 	return ret;
 }

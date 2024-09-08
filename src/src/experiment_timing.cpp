@@ -146,7 +146,7 @@ void print_benchmark_info(const Cipher &cipher)
 
 #endif // LBC_EXPERIMENT_TIMING
 
-#ifdef LWC_MODE_TIMING_AEAD
+#ifdef LWC_MODE_TIMING
 
 template <class Timer, int Trials>
 int benchmark_one_block(const aead_ctx &cipher, bool verbose = false)
@@ -260,7 +260,7 @@ int timing_experiments()
 
     return ret;
 }
-#endif // LWC_MODE_TIMING_AEAD
+#endif // LWC_MODE_TIMING
 
 int do_timing_experiments()
 {

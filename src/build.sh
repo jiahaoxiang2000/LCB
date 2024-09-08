@@ -65,7 +65,7 @@ impl_folder="$base_folder/../implementations"
 # combined_modes=("COMBINED_AEAD_ENCRYPT COMBINED_AEAD_DECRYPT COMBINED_AEAD_BOTH")
 
 # String searched in serial output indicating the end of program
-eof_marker="# lcb exit"
+eof_marker="# LCB exit"
 
 # Checks whether the first argument is in the list of items provided by the second argument
 function includes() {
@@ -126,112 +126,6 @@ function wait_eof_marker() {
 	done
 }
 
-#
-# KAT verification
-#
-function verify_kat() {
-
-	#	configs=$(echo $target-release-o2)
-
-	if [ $variant == "empty" ]; then
-		echo "skipping KAT for variant $variant"
-		return 0
-	fi
-
-	results_file="$out_folder/kat_results.txt"
-
-	print_info "+verify_kat($submission, $variant, $impl)"
-
-	printf "\n" >>$results_file
-
-	# Print header
-	count=$(grep -c "submission" $results_file)
-	if [[ $count == 0 ]]; then
-		echo "submission,variant,implementation,kat_result,os,o1,o2,o3" >>$results_file
-	fi
-
-	printf "$submission,$variant,$impl" >>$results_file
-
-	# We want to print this error only once for each variant, not for every build configuration
-	if [ ! -f $kat_file_full_path ]; then
-		echo "KAT file not found for $submission $variant"
-	fi
-
-	for conf in ${configs[@]}; do
-
-		outfile=$kat_folder/$submission-$variant-$impl-$conf-kat-out.txt
-		difffile=$kat_folder/$submission-$variant-$impl-$conf-kat-diff.txt
-		buildout=$kat_folder/$submission-$variant-$impl-$conf-kat-build.txt
-		builderr=$kat_folder/$submission-$variant-$impl-$conf-kat-err.txt
-
-		if [ ! -f $kat_file_full_path ]; then
-			printf ",kat_err_nofile" >>$results_file
-		else
-
-			# Skip if already processed
-			if [[ $overwrite = false ]] && [ -f $buildout ]; then
-				print_warning "skipping $submission $variant $impl $conf (already processed)"
-			else
-
-				# Update mode header file
-				echo "#define LWC_MODE_GENKAT_AEAD" >src/lwc_mode.h
-	
-				print_info "building implementation $impl with config $conf"
-				platformio$EXT run --verbose --environment $conf >$buildout 2>$builderr
-
-				if [[ "$?" -ne 0 ]]; then
-					print_error "build failed for $submission, $variant, $impl, $conf"
-					printf ",kat_err_build" >>$results_file
-				else
-
-					if [[ "$EXT" == ".exe" ]]; then
-						stop_watch "uploading" 3
-						platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
-						sleep 3s
-						platformio$EXT device monitor >$outfile &
-						2>$temp_folder/serial_err.txt
-						PID=$!
-
-						wait_eof_marker
-
-						kill -9 $PID
-					else
-						stop_watch "uploading" 3
-						platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
-						sleep 3s
-						platformio$EXT device monitor --filter log2file 2>$temp_folder/serial_err.txt
-						logfile=$(ls -t platformio-device-monitor* | head -1)
-						echo $logfile
-						mv $logfile $outfile
-					fi
-
-					python$EXT trim_genkat_output.py $outfile >$temp_folder/kat.txt
-
-					diff -w $temp_folder/kat.txt $impl_folder/$submission/$variant/$kat_file >$difffile
-					#diff -w $outfile $kat_file_full_path > $difffile
-
-					diff_ret=$?
-
-					if [[ $diff_ret != 0 ]]; then
-						echo "$submission $variant $impl $conf [fail]"
-						printf ",kat_err_mismatch" >>$results_file
-					else
-						echo "$submission $variant $impl $conf [success]"
-						printf ",kat_success" >>$results_file
-					fi
-
-				fi # build failed
-
-			fi # output file exists
-
-		fi # KAT file not found
-
-	done # conf
-
-	print_info "-verify_kat()"
-
-	return 0
-}
 
 #
 # Code size experiment
@@ -340,8 +234,14 @@ function measure_timing() {
 					stop_watch "uploading" 3
 					platformio$EXT run --verbose --target upload --environment $conf >$temp_folder/upload_out.txt 2>$temp_folder/upload_err.txt
 					sleep 3s
-					platformio$EXT device monitor --filter log2file 2>$temp_folder/serial_err.txt
-					logfile=$(ls -t platformio-device-monitor* | head -1)
+					# issue the monitor command in the background on linux not working
+					# platformio$EXT device monitor --filter log2file &2>$temp_folder/serial_err.txt
+					minicom -D /dev/ttyACM0 -b 9600 -C $outfile 2>$temp_folder/serial_err.txt &
+					monitor_pid=$!
+					echo "monitor_pid: $monitor_pid"
+					
+					echo $(pwd)
+					logfile=$(ls -t logs/platformio-device-monitor* | head -1)
 					echo $logfile
 					mv $logfile $outfile
 				fi
@@ -375,23 +275,23 @@ function check_source_compatibility() {
 
 	folder=$impl_folder/$submission/$variant/$impl
 
-	if [[ -r "$folder/lwc_arch_avr" ]]; then
+	if [[ -r "$folder/lcb_arch_avr" ]]; then
 		impl_arch="avr"
-	elif [[ -r "$folder/lwc_arch_armv6" ]]; then
+	elif [[ -r "$folder/lcb_arch_armv6" ]]; then
 		impl_arch='armv6'
-	elif [[ -r "$folder/lwc_arch_armv6m" ]]; then
+	elif [[ -r "$folder/lcb_arch_armv6m" ]]; then
 		impl_arch='armv6m'
-	elif [[ -r "$folder/lwc_arch_armv7m" ]]; then
+	elif [[ -r "$folder/lcb_arch_armv7m" ]]; then
 		impl_arch='armv7m'
-	elif [[ -r "$folder/lwc_arch_riscv" ]]; then
+	elif [[ -r "$folder/lcb_arch_riscv" ]]; then
 		impl_arch='riscv'
-	elif [[ -r "$folder/lwc_arch_esp8266" ]]; then
+	elif [[ -r "$folder/lcb_arch_esp8266" ]]; then
 		impl_arch='esp8266'
-	elif [[ -r "$folder/lwc_arch_sse2" ]]; then
+	elif [[ -r "$folder/lcb_arch_sse2" ]]; then
 		impl_arch='sse2'
-	elif [[ -r "$folder/lwc_arch_avx512" ]]; then
+	elif [[ -r "$folder/lcb_arch_avx512" ]]; then
 		impl_arch='avx512'
-	elif [[ -r "$folder/lwc_arch_armv7a" ]]; then
+	elif [[ -r "$folder/lcb_arch_armv7a" ]]; then
 		impl_arch='armv7a'
 	fi
 
@@ -424,7 +324,7 @@ function print_usage() {
 	echo "Usage: build.sh [-t | --target] target [options]
 		Options:
 		-t | --target <arg>     Target platform; one of {l475vg}.
-		-e | --experiment <arg> Experiments to be performed; a subset of {kat, size, timing}.
+		-e | --experiment <arg> Experiments to be performed; a subset of {size, timing}.
 		-s | --submission <arg> List of submission names to be processed.
 		-v | --variant <arg>    List of variant names to be processed.
 		-i | --impl <arg>       List of implementation names to be processed.
@@ -506,7 +406,7 @@ configs=$(echo $target-release-{os,o1,o2,o3})
 # Set and validate the experiment types
 if [[ -z "$experiments" ]]; then
 	# Perform all experiments if none specified
-	experiments="size kat timing"
+	experiments="size timing"
 else
 	# Validate the experiment names provided by the user
 	for exp in ${experiments[@]}; do
@@ -546,14 +446,12 @@ fi
 # Output folders
 out_folder="outputs/$target"
 temp_folder="$out_folder/temp"
-kat_folder="$out_folder/kat"
 size_folder="$out_folder/size"
 timing_folder="$out_folder/timing"
 
 # Create output folders
 cd "$base_folder"
 mkdir -p "$out_folder"
-mkdir -p "$kat_folder"
 mkdir -p "$temp_folder"
 mkdir -p "$size_folder"
 mkdir -p "$timing_folder"
@@ -618,31 +516,6 @@ for submission in $submissions; do
 		update_variant_count
 
 		cd $impl_folder/$submission/$variant
-
-		includes "kat" "${experiments[@]}"
-		process=$?
-
-		if [[ $process == 0 ]]; then
-			print_warning "skipping KAT verification"
-		else
-			# if combined mode, create combined KAT
-			if [ $variant != "empty" ]; then
-				kat_file=$(ls LWC*.txt)
-				echo $kat_file
-				cat $kat_file >KAT_Ref.txt
-				kat_file_full_path="$impl_folder/$submission/$variant/KAT_Ref.txt"
-			fi
-
-			# Proceed only if there's a KAT file to diff
-			echo $kat_file_full_path
-			if [ ! -f $kat_file_full_path ]; then
-				echo "KAT file not found for $submission $variant"
-			else
-				verify_kat
-				retval=$?
-				print_info "verify_kat() returned $retval"
-			fi
-		fi
 
 		implementations_to_process=""
 
@@ -709,26 +582,6 @@ for submission in $submissions; do
 				measure_code_size
 				retval=$?
 				print_info "measure_code_size() returned $retval"
-			fi
-
-			#
-			# KAT Verification
-			#
-			includes "kat" "${experiments[@]}"
-			process=$?
-
-			if [[ $process == 0 ]]; then
-				print_warning "skipping KAT verification"
-			else
-				# Proceed only if there's a KAT file to diff
-				echo $kat_file_full_path
-				if [ ! -f $kat_file_full_path ]; then
-					echo "KAT file not found for $submission $variant"
-				else
-					verify_kat
-					retval=$?
-					print_info "verify_kat() returned $retval"
-				fi
 			fi
 
 			#
