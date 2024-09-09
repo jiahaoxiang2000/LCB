@@ -2,7 +2,11 @@
 
 This page contains the benchmark results grouped with respect to the microcontroller. Each result file contains code size and timing measurements for all the implementations that have been benchmarked. Descriptions of the column names in the `csv` files are as follows:
 
- - TODO some metrics
+ - `variant`: The implementation variant for the cipher on different architectures
+ - `impl`: The implementation name for the cipher on different platforms
+ - `config`: The compile flag used for the implementation
+ - `enc`: The time taken to encrypt the message in cycles
+ - `flash`: The code size of the implementation in bytes
 
 ### Notes
 

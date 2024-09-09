@@ -2,12 +2,6 @@ import os
 import re
 import csv
 
-# Define the base directory containing the platform folders
-base_dir = "/home/xjh/code/embed/LCB/src/outputs/l475vg"
-
-# Define the output file
-output_file = "l475vg.csv"
-
 # Function to extract data from a file
 def extract_data(file_path):
     data = {
