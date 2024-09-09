@@ -52,7 +52,7 @@ def write_to_csv(data, output_file):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         # sort the data by impl
-        data = sorted(data, key=lambda x: x["impl"])
+        data = sorted(data, key=lambda x: (x["variant"], x["impl"], x["config"]))
         for row in data:
             writer.writerow(row)
         
