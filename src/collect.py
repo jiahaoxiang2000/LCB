@@ -51,8 +51,11 @@ def write_to_csv(data, output_file):
         fieldnames = ["variant", "impl", "config", "enc", "flash"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
+        # sort the data by impl
+        data = sorted(data, key=lambda x: x["impl"])
         for row in data:
             writer.writerow(row)
+        
 
 # Main script
 if __name__ == "__main__":
