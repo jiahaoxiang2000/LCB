@@ -3,8 +3,8 @@
 
 
 aead_ctx lwc_aead_cipher = {
-	"warp64v1",
-	"armv7m-c",
+	"warp64_bitslicing",
+	"arm",
 	CRYPTO_KEYBYTES,
 	crypto_encrypt,
 	crypto_decrypt

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/xjh/code/embed/LCB/implementations/ascon/ascon128v12/armv7m",
-      "program": "/home/xjh/code/embed/LCB/implementations/ascon/ascon128v12/armv7m/build/Debug/outDebug",
+      "cwd": "/home/xjh/code/embed/LCB/implementations/warp/warp64v1/armv7m_asm",
+      "program": "/home/xjh/code/embed/LCB/implementations/warp/warp64v1/armv7m_asm/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
