@@ -1,5 +1,0 @@
-variant,impl,config,enc,flash
-warp64v1,armv7m-c,O3,42132,12640
-warp64v1,armv7m-c,O1,42143,13188
-warp64v1,armv7m-c,O2,42133,12768
-warp64v1,armv7m-c,Os,42132,11936
