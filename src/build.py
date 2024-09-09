@@ -111,12 +111,13 @@ def measure_timing(submission, variant, impl, configs, timing_folder, temp_folde
                 subprocess.run([f"platformio{EXT}", "run", "--verbose", "--target", "upload", "--environment", conf], stdout=open(uploadout, 'w'), stderr=open(uploaderr, 'w'))
                 time.sleep(3)
                 # Start minicom in the background
-                subprocess.Popen(
+                process = subprocess.Popen(
                     [f"platformio{EXT}", "device", "monitor"],
                     stdout=open(outfile, 'w'),
                     stderr=open(temp_folder / "serial_err.txt", 'w')
                 )
                 wait_eof_marker(outfile)
+                process.terminate()
 
     print_info("-measure_timing()")
     return 0
