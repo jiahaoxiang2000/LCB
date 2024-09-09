@@ -55,7 +55,7 @@ def measure_code_size(submission, variant, impl, configs, size_folder, out_folde
         errfile = size_folder / f"{submission}-{variant}-{impl}-{conf}-err.txt"
 
         with open("src/lwc_mode.h", 'w') as f:
-            f.write("#define LWC_MODE_USE_AEAD_ENCRYPT")
+            f.write("#define LWC_MODE_USE_ENCRYPT")
 
         if not overwrite and outfile.exists():
             print_warning(f"skipping implementation {impl} with config {conf} [output file exists]")

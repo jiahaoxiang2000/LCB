@@ -32,32 +32,36 @@
 #include "lwc_benchmark.h"
 
 
-#if defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-int use_aead()
+#if defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_DECRYPT) || defined(LWC_MODE_USE_BOTH) 
+int use()
 {
-	buffer<32> key;
-	buffer<32> nonce;
-	buffer<32> buf;
+
+	const int MaxBlockBytes = 16;
+	const int MaxKeyBytes = 16;
+
+	buffer<MaxKeyBytes> key;
+	buffer<MaxBlockBytes> c;
+	buffer<MaxBlockBytes> m;
 	unsigned long long len;
 	int ret;
 
 	key.init();
-	nonce.init();
-	buf.init();
+	c.init();
+	m.init();
 
-#if defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-	ret = lwc_aead_cipher.encrypt(buf.data(), &len, nullptr, 0, nullptr, 0, nullptr, nonce.data(), key.data());
-	//SOUT << "crypto_encrypt() returned " << ret << SENDL;
+#if defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_BOTH) 
+	ret = lwc_aead_cipher.encrypt(c.data(), m.data(), MaxBlockBytes, key.data());
+	//SOUT << "crypto_encrypt() returned " << ret << SENDL;											
 #endif // LWC_MODE_USE_AEAD_ENCRYPT
 
-#if defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-	ret = lwc_aead_cipher.decrypt(nullptr, &len, nullptr, buf.data(), lwc_aead_cipher.ABytes, nullptr, 0, nonce.data(), key.data());
+#if defined(LWC_MODE_USE_DECRYPT) || defined(LWC_MODE_USE_BOTH) 
+	ret = lwc_aead_cipher.decrypt(m.data(), c.data(), MaxBlockBytes, key.data());
 	//SOUT << "crypto_aead_decrypt() returned " << ret << SENDL;
 #endif // LWC_MODE_USE_AEAD_DECRYPT
 
 	return ret;
 }
-#endif // defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT)
+#endif // defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_DECRYPT)
 
 
 
@@ -66,8 +70,8 @@ int do_size_experiments()
 {
 	int ret{ 0 };
 
-#if defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
-	ret = use_aead();
+#if defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_DECRYPT) || defined(LWC_MODE_USE_BOTH) 
+	ret = use();
 #endif
 
 

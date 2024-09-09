@@ -41,10 +41,6 @@ int do_experiments()
 
     ret = do_size_experiments();
 
-#elif defined(LWC_EXPERIMENT_GENKAT)
-
-    ret = do_genkat_experiments();
-
 #elif defined(LBC_EXPERIMENT_TIMING)
 
     ret = do_timing_experiments();

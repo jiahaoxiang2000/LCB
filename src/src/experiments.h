@@ -32,8 +32,6 @@
 #pragma once
 
 
-// Generates KAT values for AEAD and Hash implementations
-int do_genkat_experiments();
 
 // Depending on the mode, invokes the AEAD encryption and/or AEAD decryption function, 
 // or the hash function once

@@ -42,9 +42,9 @@
 #endif
 
 // Define experiment type based on the mode
-#if defined(LWC_MODE_TIMING) || defined(LWC_MODE_TIMING_HASH)
+#if defined(LWC_MODE_TIMING) || defined(LWC_MODE_TIMING_ENCRYPT)
     #define LBC_EXPERIMENT_TIMING
-#elif defined(LWC_MODE_USE_AEAD_ENCRYPT) || defined(LWC_MODE_USE_AEAD_DECRYPT) || defined(LWC_MODE_USE_AEAD_BOTH) || defined(LWC_MODE_USE_HASH) || defined(LWC_MODE_USE_COMBINED_AEAD_ENCRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_DECRYPT) || defined(LWC_MODE_USE_COMBINED_AEAD_BOTH)
+#elif defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_DECRYPT) || defined(LWC_MODE_USE_BOTH)
     #define LWC_EXPERIMENT_SIZE
 #endif
 
@@ -63,7 +63,6 @@
 
 
 #include "lcb_crypto.h"
-#include "lwc_crypto_hash.h"
 #include "experiments.h"
 #include "timers.h"
 #include "utils.h"

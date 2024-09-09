@@ -35,19 +35,8 @@
 
 const uint32_t ShortInputStep = 8;
 
-#if defined(LWC_PLATFORM_UNO) || defined(LWC_PLATFORM_NANOEVERY) || defined(LWC_PLATFORM_DUEUSB)
-using timer = timer_micros;
-const uint32_t Trials = 5;
-const uint32_t MaxLongInputLength = 512;
-const uint32_t MaxShortInputLength = 128;
-const uint32_t LongInputStep = 128;
-#elif defined(LWC_PLATFORM_NODEMCUV2)
-using timer = timer_cycles;
-const uint32_t Trials = 3;
-const uint32_t MaxLongInputLength = 512;
-const uint32_t MaxShortInputLength = 128;
-const uint32_t LongInputStep = 128;
-#elif defined(LWC_PLATFORM_PIC32MX3)
+// some different configurations for specific platforms
+#if defined(LWC_PLATFORM_PIC32MX3)
 using timer = timer_micros;
 const uint32_t Trials = 5;
 const uint32_t MaxLongInputLength = 512;
@@ -56,9 +45,6 @@ const uint32_t LongInputStep = 128;
 #else
 using timer = timer_cycles;
 const uint32_t Trials = 3;
-const uint32_t MaxLongInputLength = 2048;
-const uint32_t MaxShortInputLength = 128;
-const uint32_t LongInputStep = 128;
 #endif
 
 //
@@ -152,15 +138,12 @@ template <class Timer, int Trials>
 int benchmark_one_block(const aead_ctx &cipher, bool verbose = false)
 {
 
-    const int MaxKeyBytes = 32;
-    const int MaxNonceBytes = 32;
-    const int MaxABytes = 32;
+    const int MaxBlockBytes = 16;
+    const int MaxKeyBytes = 16;
 
-    buffer<8> msg;
-    buffer<8> ct;
-    buffer<8> ad;
+    buffer<MaxBlockBytes> msg;
+    buffer<MaxBlockBytes> ct;
     buffer<MaxKeyBytes> key;
-    buffer<MaxNonceBytes> nonce;
     buffer<Trials, uint32_t> elapsedEnc, elapsedDec;
     unsigned long long clen, mlenDec;
     int ret{0}, fret;
@@ -171,15 +154,13 @@ int benchmark_one_block(const aead_ctx &cipher, bool verbose = false)
     for (int i = 0; i < Trials; i++)
     {
         msg.init();
-        ad.init();
         key.init();
-        nonce.init();
 
         // Encryption
         {
             Timer tm(elapsedEnc[i]);
 
-            fret = cipher.encrypt(ct.data(), msg.data(), 8, key.data());
+            fret = cipher.encrypt(ct.data(), msg.data(), MaxBlockBytes, key.data());
         }
 
         if (fret != 0)
@@ -272,7 +253,9 @@ int do_timing_experiments()
     systick_reload_max srm;
 #endif
 
+#if defined(LWC_MODE_TIMING)
     ret = timing_experiments();
+#endif
 
     return ret;
 }
