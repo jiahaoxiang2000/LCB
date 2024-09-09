@@ -135,7 +135,7 @@ void print_benchmark_info(const Cipher &cipher)
 #ifdef LWC_MODE_TIMING
 
 template <class Timer, int Trials>
-int benchmark_one_block(const aead_ctx &cipher, bool verbose = false)
+int benchmark_one_block(const cipher_ctx &cipher, bool verbose = false)
 {
 
     const int MaxBlockBytes = 16;
@@ -236,7 +236,7 @@ int timing_experiments()
 
     {
         // Test case : one block cipher
-        ret |= benchmark_one_block<timer, Trials>(lwc_aead_cipher, false);
+        ret |= benchmark_one_block<timer, Trials>(lcb_cipher, false);
     }
 
     return ret;

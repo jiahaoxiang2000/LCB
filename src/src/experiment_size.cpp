@@ -50,12 +50,12 @@ int use()
 	m.init();
 
 #if defined(LWC_MODE_USE_ENCRYPT) || defined(LWC_MODE_USE_BOTH) 
-	ret = lwc_aead_cipher.encrypt(c.data(), m.data(), MaxBlockBytes, key.data());
+	ret = lcb_cipher.encrypt(c.data(), m.data(), MaxBlockBytes, key.data());
 	//SOUT << "crypto_encrypt() returned " << ret << SENDL;											
 #endif // LWC_MODE_USE_AEAD_ENCRYPT
 
 #if defined(LWC_MODE_USE_DECRYPT) || defined(LWC_MODE_USE_BOTH) 
-	ret = lwc_aead_cipher.decrypt(m.data(), c.data(), MaxBlockBytes, key.data());
+	ret = lcb_cipher.decrypt(m.data(), c.data(), MaxBlockBytes, key.data());
 	//SOUT << "crypto_aead_decrypt() returned " << ret << SENDL;
 #endif // LWC_MODE_USE_AEAD_DECRYPT
 

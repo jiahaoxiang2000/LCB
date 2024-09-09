@@ -55,9 +55,9 @@ extern "C"
 		fn_encrypt encrypt;
 		fn_decrypt decrypt;
 
-	} aead_ctx;
+	} cipher_ctx;
 
-	extern aead_ctx lwc_aead_cipher;
+	extern cipher_ctx lcb_cipher;
 
 	int crypto_encrypt(
 		unsigned char *c,

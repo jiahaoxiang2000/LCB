@@ -2,9 +2,9 @@
 #include "api.h"
 
 
-aead_ctx lwc_aead_cipher = {
+cipher_ctx lcb_cipher = {
 	"warp64_bitslicing",
-	"armv7m_asm",
+	"arm",
 	CRYPTO_KEYBYTES,
 	crypto_encrypt,
 	crypto_decrypt

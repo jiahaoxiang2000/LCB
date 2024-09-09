@@ -24,7 +24,8 @@ The experiment that is going to be carried out is defined in the `lwc_mode.h` fi
 | LWC_MODE_TIMING_ENCRYPT* | Timing | Only measure encryption time.|
 | LWC_MODE_TIMING | Timing | Performs timing measurements for the implementation.|
 
-> `*` is not supported in the current version of the framework. 
+> - `*` is not supported in the current version of the framework
+> - the code size, we only record the `.text` section size of the binary file. 
 
 The build script that is explained in the next section creates a new `lwc_mode.h` file for each experiment before the build. Build will fail if there is no `lwc_mode.h` in the `src` folder or it does not contain one of the above definitions.
 
