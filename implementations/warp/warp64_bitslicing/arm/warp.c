@@ -98,14 +98,15 @@ int crypto_encrypt(unsigned char *c,
                    const unsigned char *m, unsigned long long mlen,
                    const unsigned char *k)
 {
-
-   uint32_t r0, r1, r2, r3;
+    uint32_t r0, r1, r2, r3;
+    // bit covert, the c is one byte to 8-bit data, need to store to r0, r1, r2, r3 uint32_t data, that easy connect to bitslicing c[0-3] = r0, c[4-7] = r1, c[8-11] = r2, c[12-15] = r3
+    r0 = (uint32_t)m[0] | ((uint32_t)m[1] << 8) | ((uint32_t)m[2] << 16) | ((uint32_t)m[3] << 24);
+    r1 = (uint32_t)m[4] | ((uint32_t)m[5] << 8) | ((uint32_t)m[6] << 16) | ((uint32_t)m[7] << 24);
+    r2 = (uint32_t)m[8] | ((uint32_t)m[9] << 8) | ((uint32_t)m[10] << 16) | ((uint32_t)m[11] << 24);
+    r3 = (uint32_t)m[12] | ((uint32_t)m[13] << 8) | ((uint32_t)m[14] << 16) | ((uint32_t)m[15] << 24);
+    
     uint32_t p_shift[] = {21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31, 21, 29, 25, 25, 23, 15, 5, 9, 1, 13, 27, 19, 7, 27, 11, 31};
 
-    r0 = 0xffff00;
-    r1 = 0xf0ff0f0;
-    r2 = 0x3333cccc;
-    r3 = 0x5555aaaa;
 
     uint32_t t0, t1, t2, t3;
 
@@ -141,6 +142,20 @@ int crypto_encrypt(unsigned char *c,
     r1 ^= t1 ^ ks[40 * 4 + 1];
     r2 ^= t2 ^ ks[40 * 4 + 2];
     r3 ^= t3 ^ ks[40 * 4 + 3];
+
+    // like the start, the output need 32-bit data to 8-bit data, so need to bit covert
+    for (size_t i = 0; i < 4; i++)
+    {
+        c[i] = (uint8_t)r0;
+        c[i + 4] = (uint8_t)r1;
+        c[i + 8] = (uint8_t)r2;
+        c[i + 12] = (uint8_t)r3;
+        r0 >>= 8;
+        r1 >>= 8;
+        r2 >>= 8;
+        r3 >>= 8;
+    }
+
   return 0;
 }
 
