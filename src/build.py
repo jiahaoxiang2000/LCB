@@ -38,7 +38,7 @@ def stop_watch(message, seconds):
 def wait_eof_marker(outfile):
     count = 0
     while count == 0:
-        time.sleep(10)
+        time.sleep(3)
         with open(outfile, 'r') as f:
             content = f.read()
             count = content.count(eof_marker)
@@ -90,6 +90,7 @@ def measure_timing(submission, variant, impl, configs, timing_folder, temp_folde
         uploadout = temp_folder / f"{submission}-{variant}-{impl}-{conf}-uout.txt"
         uploaderr = temp_folder / f"{submission}-{variant}-{impl}-{conf}-uerr.txt"
 
+        # which mode to control the include code on c language source code. 
         with open("src/lwc_mode.h", 'w') as f:
             f.write("#define LWC_MODE_TIMING")
 
@@ -97,7 +98,7 @@ def measure_timing(submission, variant, impl, configs, timing_folder, temp_folde
             print_warning(f"skipping implementation {impl} with config {conf} [output file exists]")
         else:
             print_info(f"building implementation {impl} with config {conf}")
-
+            # use the platformio to build the source code
             result = subprocess.run([f"platformio{EXT}", "run", "--verbose", "--environment", conf], stdout=open(buildout, 'w'), stderr=open(builderr, 'w'))
 
             if result.returncode != 0:
@@ -106,10 +107,15 @@ def measure_timing(submission, variant, impl, configs, timing_folder, temp_folde
                     f.write("build failed")
             else:
                 stop_watch("uploading", 3)
+                # use the platformio to upload the compiled binary to the board
                 subprocess.run([f"platformio{EXT}", "run", "--verbose", "--target", "upload", "--environment", conf], stdout=open(uploadout, 'w'), stderr=open(uploaderr, 'w'))
                 time.sleep(3)
                 # Start minicom in the background
-                subprocess.Popen(["minicom", "-D", "/dev/ttyACM0", "-b", "9600", "-C", outfile], stderr=open(temp_folder / "serial_err.txt", 'w'))
+                subprocess.Popen(
+                    [f"platformio{EXT}", "device", "monitor"],
+                    stdout=open(outfile, 'w'),
+                    stderr=open(temp_folder / "serial_err.txt", 'w')
+                )
                 wait_eof_marker(outfile)
 
     print_info("-measure_timing()")
@@ -163,115 +169,118 @@ def parse_args():
     parser.add_argument("-p", "--primary", action="store_true", help="Process only primary variants.")
     return parser.parse_args()
 
-# Main script
-args = parse_args()
 
-target = args.target
-experiments = args.experiment.split() if args.experiment else ["size", "timing"]
-submissions = args.submission.split() if args.submission else []
-variants = args.variant.split() if args.variant else []
-implementations = args.impl.split() if args.impl else []
-process_primary = args.primary
-overwrite = args.overwrite
+if __name__ == "__main__":
 
-if not includes(target, platform_list):
-    print_error(f"error: platform '{target}' does not exist")
-    exit(1)
+    # Main script
+    args = parse_args()
 
-configs = [f"{target}-release-{opt}" for opt in ["os", "o1", "o2", "o3"]]
+    target = args.target
+    experiments = args.experiment.split() if args.experiment else ["size", "timing"]
+    submissions = args.submission.split() if args.submission else []
+    variants = args.variant.split() if args.variant else []
+    implementations = args.impl.split() if args.impl else []
+    process_primary = args.primary
+    overwrite = args.overwrite
 
-if not submissions:
-    submissions = [sub.name for sub in impl_folder.iterdir() if sub.is_dir()]
+    if not includes(target, platform_list):
+        print_error(f"error: platform '{target}' does not exist")
+        exit(1)
 
-print(f"target            : {target}")
-print(f"configs           : {configs}")
-print(f"experiments       : {experiments}")
-print(f"submissions       : {submissions}")
-print(f"variants          : {variants}")
-print(f"implementations   : {implementations}")
-print(f"process_primary   : {process_primary}")
-print(f"overwrite         : {overwrite}")
+    configs = [f"{target}-release-{opt}" for opt in ["os", "o1", "o2", "o3"]]
 
-supported_impl = "armv7m" if target == "l475vg" else ""
+    if not submissions:
+        submissions = [sub.name for sub in impl_folder.iterdir() if sub.is_dir()]
 
-out_folder = base_folder / f"outputs/{target}"
-temp_folder = out_folder / "temp"
-size_folder = out_folder / "size"
-timing_folder = out_folder / "timing"
+    print(f"target            : {target}")
+    print(f"configs           : {configs}")
+    print(f"experiments       : {experiments}")
+    print(f"submissions       : {submissions}")
+    print(f"variants          : {variants}")
+    print(f"implementations   : {implementations}")
+    print(f"process_primary   : {process_primary}")
+    print(f"overwrite         : {overwrite}")
 
-out_folder.mkdir(parents=True, exist_ok=True)
-temp_folder.mkdir(parents=True, exist_ok=True)
-size_folder.mkdir(parents=True, exist_ok=True)
-timing_folder.mkdir(parents=True, exist_ok=True)
+    supported_impl = "armv7m" if target == "l475vg" else ""
 
-NumSubmissions = 0
-NumVariants = 0
-NumImplementations = 0
+    out_folder = base_folder / f"outputs/{target}"
+    temp_folder = out_folder / "temp"
+    size_folder = out_folder / "size"
+    timing_folder = out_folder / "timing"
 
-for submission in submissions:
-    if includes(submission, skip_submission):
-        print_warning(f"skipping submission {submission}")
-        continue
+    out_folder.mkdir(parents=True, exist_ok=True)
+    temp_folder.mkdir(parents=True, exist_ok=True)
+    size_folder.mkdir(parents=True, exist_ok=True)
+    timing_folder.mkdir(parents=True, exist_ok=True)
 
-    print_info(f"processing {submission}")
-    NumSubmissions += 1
+    NumSubmissions = 0
+    NumVariants = 0
+    NumImplementations = 0
 
-    submission_path = impl_folder / submission
-    variants_to_process = variants if variants else [var.name for var in submission_path.iterdir() if var.is_dir()]
-
-    for variant in variants_to_process:
-        variant_path = submission_path / variant
-        if not variant_path.is_dir():
+    for submission in submissions:
+        if includes(submission, skip_submission):
+            print_warning(f"skipping submission {submission}")
             continue
 
-        if includes(variant, skip_variant):
-            print_warning(f"skipping variant {variant}")
-            continue
+        print_info(f"processing {submission}")
+        NumSubmissions += 1
 
-        is_primary = (variant_path / "primary").exists()
-        print_info(f"variant {variant} is primary : {is_primary}")
+        submission_path = impl_folder / submission
+        variants_to_process = variants if variants else [var.name for var in submission_path.iterdir() if var.is_dir()]
 
-        if process_primary and not is_primary:
-            print_warning(f"skipping non-primary variant {variant}")
-            continue
-
-        print_info(f"processing {variant}")
-        update_variant_count()
-
-        implementations_to_process = implementations if implementations else [impl.name for impl in variant_path.iterdir() if impl.is_dir()]
-
-        for impl in implementations_to_process:
-            impl_path = variant_path / impl
-            if not impl_path.is_dir():
+        for variant in variants_to_process:
+            variant_path = submission_path / variant
+            if not variant_path.is_dir():
                 continue
 
-            if includes(impl, skip_impl):
-                print_warning(f"skipping implementation {impl}")
+            if includes(variant, skip_variant):
+                print_warning(f"skipping variant {variant}")
                 continue
 
-            if not check_source_compatibility(submission, variant, impl):
-                print_warning(f"skipping implementation {impl} [not target compatible]")
+            is_primary = (variant_path / "primary").exists()
+            print_info(f"variant {variant} is primary : {is_primary}")
+
+            if process_primary and not is_primary:
+                print_warning(f"skipping non-primary variant {variant}")
                 continue
 
-            print_info(f"processing implementation {impl}")
-            update_implementation_count()
+            print_info(f"processing {variant}")
+            update_variant_count()
 
-            src_iut_path = base_folder / "src/iut"
-            shutil.rmtree(src_iut_path, ignore_errors=True)
-            shutil.copytree(impl_path, src_iut_path)
+            implementations_to_process = implementations if implementations else [impl.name for impl in variant_path.iterdir() if impl.is_dir()]
 
-            constraints_file = src_iut_path / "lwc_constraints.h"
-            if constraints_file.exists():
-                shutil.copy(constraints_file, base_folder / "src")
-            else:
-                with open(base_folder / "src/lwc_constraints.h", 'w') as f:
-                    f.write("")
+            for impl in implementations_to_process:
+                impl_path = variant_path / impl
+                if not impl_path.is_dir():
+                    continue
 
-            if "size" in experiments:
-                measure_code_size(submission, variant, impl, configs, size_folder, out_folder, overwrite)
+                if includes(impl, skip_impl):
+                    print_warning(f"skipping implementation {impl}")
+                    continue
 
-            if "timing" in experiments:
-                measure_timing(submission, variant, impl, configs, timing_folder, temp_folder, overwrite)
+                if not check_source_compatibility(submission, variant, impl):
+                    print_warning(f"skipping implementation {impl} [not target compatible]")
+                    continue
 
-print_info(f"processed {NumSubmissions} submissions")
-print_info(f"{NumVariants} variants, {NumImplementations} implementations")
+                print_info(f"processing implementation {impl}")
+                update_implementation_count()
+
+                src_iut_path = base_folder / "src/iut"
+                shutil.rmtree(src_iut_path, ignore_errors=True)
+                shutil.copytree(impl_path, src_iut_path)
+
+                constraints_file = src_iut_path / "lwc_constraints.h"
+                if constraints_file.exists():
+                    shutil.copy(constraints_file, base_folder / "src")
+                else:
+                    with open(base_folder / "src/lwc_constraints.h", 'w') as f:
+                        f.write("")
+
+                if "size" in experiments:
+                    measure_code_size(submission, variant, impl, configs, size_folder, out_folder, overwrite)
+
+                if "timing" in experiments:
+                    measure_timing(submission, variant, impl, configs, timing_folder, temp_folder, overwrite)
+
+    print_info(f"processed {NumSubmissions} submissions")
+    print_info(f"{NumVariants} variants, {NumImplementations} implementations")

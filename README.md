@@ -25,5 +25,6 @@ More information on implementations included in this effort can be found [here](
 - [x] remove the KAT function in the benchmarking framework
 - [x] let warp implement to different floder
 - [] add the more platform to the benchmarking framework
-- [] refloct the build.sh by the python script
+- [x] refloct the build.sh by the python script
 - [] the print use the log framework
+- [] add the data collection script
