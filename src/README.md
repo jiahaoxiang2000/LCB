@@ -8,6 +8,8 @@
 
 The benchmarking framework was developed and tested on Windows 10 for the NIST. It does not use a Windows specific feature, though. Now we modified the framework to work on Linux as well. 
 
+> note: when transferring the framework to a Linux machine, the serial console output may not work as expected. So we reflector the script to python.
+
 ## Experiments and Operating Modes
 
 The framework is designed to process implementations and experiments one at a time. The implementation that is to be benchmarked must be copied under the `src\iut` folder. There must be exactly one implementation in this folder, otherwise the build will fail.
@@ -16,53 +18,64 @@ The experiment that is going to be carried out is defined in the `lwc_mode.h` fi
 
 | Symbol | Experiment Type | |
 | :------ | :------: | :----- |
-| LWC_MODE_GENKAT_AEAD | KAT | Generates KAT file for the AEAD implementation.|
-| LWC_MODE_GENKAT_HASH | KAT | Generates KAT file for the Hash implementation.|
-| LWC_MODE_GENKAT_COMBINED | KAT | Generates KAT file for the combined AEAD and Hash implementation.|
-| LWC_MODE_USE_AEAD_ENCRYPT | Code Size | Only AEAD encryption function is used.|
-| LWC_MODE_USE_AEAD_DECRYPT | Code Size | Only AEAD decryption function is used.|
-| LWC_MODE_USE_AEAD_BOTH | Code Size | AEAD encryption and decryption functions are both used.|
-| LWC_MODE_USE_HASH | Code Size | Hash function is invoked once.|
-| LWC_MODE_USE_COMBINED_AEAD_ENCRYPT | Code Size | AEAD encryption and Hash functions are used.|
-| LWC_MODE_USE_COMBINED_AEAD_DECRYPT | Code Size | AEAD decryption and Hash functions are used.|
-| LWC_MODE_USE_COMBINED_AEAD_BOTH | Code Size | AEAD encryption, AEAD decryption, and Hash functions are used.|
-| LWC_MODE_TIMING_AEAD | Timing | Performs timing measurements for the AEAD implementation.|
-| LWC_MODE_TIMING_HASH | Timing | Performs timing measurements for the Hash implementation.|
+| LWC_MODE_USE_ENCRYPT | Code Size | Only encryption function is used.|
+| LWC_MODE_USE_DECRYPT* | Code Size | Only decryption function is used.|
+| LWC_MODE_USE_BOTH* | Code Size | encryption and decryption functions are both used.|
+| LWC_MODE_TIMING_ENCRYPT* | Timing | Only measure encryption time.|
+| LWC_MODE_TIMING | Timing | Performs timing measurements for the implementation.|
 
+> `*` is not supported in the current version of the framework. 
 
 The build script that is explained in the next section creates a new `lwc_mode.h` file for each experiment before the build. Build will fail if there is no `lwc_mode.h` in the `src` folder or it does not contain one of the above definitions.
 
-## Building with the script `build.sh`
+## Building with the script `build.py`
 
-The bash script `build.sh` processes the implementations by building them within the framework and depending on the experiment being done it uploads the program to the target device and captures the program output. At a minimum, the script must be provided a target platform name, which can be one of the platforms defined in the `platformio.ini` file. Currently, the valid platform names are `{mkrzero, uno, nano33ble, nano_every}`. 
+The python script `build.py` processes the implementations by building them within the framework and depending on the experiment being done it uploads the program to the target device and captures the program output. At a minimum, the script must be provided a target platform name, which can be one of the platforms defined in the `platformio.ini` file. Currently, the valid platform names are `{l475vg}`. 
 
-By default, the script processes all implementations and does all the experiments. However, the behaviour can be changed by providing command line arguments, for instance to process only one or more *submissions*, or *variants*, as well as performing select experiments. Running the script with no arguments gives an explanation of the set of available command line arguments. Some examples:
+By default, the script processes all implementations and does all the experiments. However, the behaviour can be changed by providing command line arguments, for instance to process only one or more *submissions*, or *variants*, as well as performing select experiments. Running the script with `-h` gives an explanation of the set of available command line arguments. Some examples:
 
 
 ``` bash
-./build.sh --target mkrzero # Processes all implementations for all experiments
+python build.py --target l475vg # Processes all implementations for all experiments
 ```
 
 ``` bash
-./build.sh --target mkrzero --experiment "kat timing" # Perform only KAT and Timing experiments on all implementations (skip code size experiments)
+python build.py --target l475vg --experiment "size timing" # Perform only Code size and Timing experiments on all implementations
 ```
 
 ``` bash
-./build.sh --target mkrzero --submission "ace ascon comet" # Process all implementations of the submissions ACE, ASCON, and COMET
+python build.py --target l475vg --submission "warp" # Process all implementations of the submissions warp
 ```
 
 ``` bash
-./build.sh --target mkrzero --primary --aead # Process only implementations of primary AEAD variants
+python build.py --target l475vg --primary  # Process only implementations of primary variants
 ```
 
 ``` bash
-./build.sh --target mkrzero --impl ref --experiment kat # Perform KAT verification for all reference implementations
+python build.py --target l475vg --impl arm --experiment size # Perform size experiment on all implementations of the arm implementation
 ```
 
 
-**Note:** For code size experiments, the device is not required since the code sizes are extracted from the build output. However, for *KAT* and *Timing* experiments, the program must run on the device and the output needs to be captured. 
+**Note:** For code size experiments, the device is not required since the code sizes are extracted from the build output. However, for *Timing* experiments, the program must run on the device and the output needs to be captured. 
 
-### Results
+## Collect Results with `collect.py`
 
-The build script will save the results in the `outputs` folder. The results for each target platform are stored under their respective folders.
+The build script will save the results in the `outputs` folder. The results for each target platform are stored under their respective folders. For aggregation and analysis, the `collect.py` script can be used. The script will read the results from the `outputs` folder split by the target platform and will generate a CSV file. All types of experiments are collected in the same file. The script can be run as follows:
+
+> warning: now the collect script need the result simultaneously have the code size and timing result. future work will be done to separate the code size and timing result. 
+
+``` bash
+python collect.py
+```
+
+
+## Tips
+
+### Debug for a Single Implementation
+
+We need to check one implementation at a time. To do this, we can use the `--submission` and `--impl` arguments together. For example, to check the `warp` submission and the `arm` implementation, we can use the following command:
+
+``` bash
+python build.py --target l475vg --submission warp --variant warp64 --impl arm --experiment timing  --overwrite && python collect.py
+``` 
 

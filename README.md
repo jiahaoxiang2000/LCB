@@ -27,4 +27,4 @@ More information on implementations included in this effort can be found [here](
 - [] add the more platform to the benchmarking framework
 - [x] refloct the build.sh by the python script
 - [] the print use the log framework
-- [] add the data collection script
+- [x] add the data collection script
