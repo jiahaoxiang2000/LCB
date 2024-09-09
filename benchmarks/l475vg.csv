@@ -1,8 +1,8 @@
 variant,impl,config,enc,flash
-warp64,arm,O1,7865,11356
-warp64,arm,O2,17,10912
-warp64,arm,O3,17,10784
-warp64,arm,Os,14,10084
+warp64,arm,O1,38840,11808
+warp64,arm,O2,27542,11520
+warp64,arm,O3,16799,12824
+warp64,arm,Os,35358,10600
 warp64_bitslicing,arm,O1,36212,11760
 warp64_bitslicing,arm,O2,31482,11268
 warp64_bitslicing,arm,O3,17,10784

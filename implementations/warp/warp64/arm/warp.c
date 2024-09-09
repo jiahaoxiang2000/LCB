@@ -10,8 +10,15 @@ int crypto_encrypt(unsigned char *c,
                    const unsigned char *m, unsigned long long mlen,
                    const unsigned char *k)
 {
-
     uint8_t X[32] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    // there is bit cover, the m is one byte to 8-bit data, the X is one byte to 4-bit data, so there need the bit cover
+    for (size_t i = 0; i < 16; i++)
+    {
+        X[2 * i] = (m[i] >> 4) & 0x0F;
+        X[2 * i + 1] = m[i] & 0x0F;
+    }
+
+    
     uint8_t temp[32] = {0};
     uint8_t S[16] = {0xC, 0xA, 0xD, 0x3, 0xE, 0xB, 0xF, 0x7, 0x8, 0x9, 0x1, 0x5, 0x0, 0x2, 0x4, 0x6};
     uint8_t C[32] = {0x2, 0x4, 0xC, 0xE, 0x0, 0xA, 0x8, 0xE, 0xF, 0xD, 0x9, 0xF, 0x3, 0x2, 0xD, 0xE, 0x5, 0x2, 0x9, 0xD, 0x5, 0xF, 0xD, 0xF, 0x4, 0x5, 0x7, 0x0, 0x3, 0xA, 0x8, 0xD};
@@ -56,6 +63,11 @@ int crypto_encrypt(unsigned char *c,
     }
     X[1] = X[1] ^ RC0s[40];
     X[3] = X[3] ^ RC1s[40];
+    // similar like the start bit cover, the X is one byte to 4-bit data, the c is one byte to 8-bit data, so there need the bit cover
+    for (size_t i = 0; i < 16; i++)
+    {
+        c[i] = (X[2 * i] << 4) | X[2 * i + 1];
+    }
   return 0;
 }
 
