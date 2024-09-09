@@ -62,6 +62,18 @@ def write_to_csv(data, output_file):
 
 # Main script
 if __name__ == "__main__":
-    aggregated_data = collect_data(base_dir)
-    write_to_csv(aggregated_data, output_file)
-    print(f"Data aggregated and written to {output_file}")
+    # get the run path 
+    base_dir = os.path.join(os.getcwd(), "outputs")
+    # then travel the base_dir sub folders for different platform
+    for platform in os.listdir(base_dir):
+        # get the platform folder path
+        platform_path = os.path.join(base_dir, platform)
+        # get the output file path
+        # the output file path is the relative base_dir ../../benchmarks/
+        output_path = os.path.join(base_dir, "../../benchmarks/")
+        output_file = os.path.join(output_path, f"{platform}.csv")
+        # get the aggregated data
+        aggregated_data = collect_data(platform_path)
+        # write the data to csv file
+        write_to_csv(aggregated_data, output_file)
+        print(f"Data aggregated and written to {output_file}")
