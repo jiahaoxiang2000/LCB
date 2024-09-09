@@ -106,10 +106,10 @@ def measure_timing(submission, variant, impl, configs, timing_folder, temp_folde
                 with open(outfile, 'w') as f:
                     f.write("build failed")
             else:
-                stop_watch("uploading", 3)
+                stop_watch("uploading", 1)
                 # use the platformio to upload the compiled binary to the board
                 subprocess.run([f"platformio{EXT}", "run", "--verbose", "--target", "upload", "--environment", conf], stdout=open(uploadout, 'w'), stderr=open(uploaderr, 'w'))
-                time.sleep(3)
+                # time.sleep(1)
                 # Start minicom in the background
                 process = subprocess.Popen(
                     [f"platformio{EXT}", "device", "monitor"],

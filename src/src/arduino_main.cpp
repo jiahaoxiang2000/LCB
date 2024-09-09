@@ -53,7 +53,7 @@ void setup()
 
   // Wait for a few seconds before running the experiments in order to allow
   // enonugh time for opening the terminal window if run from the IDE
-  stop_watch(5);
+  // stop_watch(1);
 #endif
 
   int ret = do_experiments();
