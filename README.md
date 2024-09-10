@@ -14,7 +14,8 @@ More information on implementations included in this effort can be found [here](
 ## Supported Platforms
 
 - [x] [Panduola board](https://www.alientek.com/Product_Details/77.html) for STM32L475vet6, is compatible with the STM32L4 series of microcontrollers.
-
+- [] [Longan nano](https://longan.sipeed.com/en/) for GD32VF103CBT6.
+ 
 ## Refer benchmarking framework
 
 - [NIST LWC - 2022](https://github.com/usnistgov/Lightweight-Cryptography-Benchmarking)
