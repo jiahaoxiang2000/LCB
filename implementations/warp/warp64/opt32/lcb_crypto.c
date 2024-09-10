@@ -4,7 +4,7 @@
 
 cipher_ctx lcb_cipher = {
 	"warp64",
-	"arm",
+	"opt32",
 	CRYPTO_KEYBYTES,
 	crypto_encrypt,
 	crypto_decrypt
