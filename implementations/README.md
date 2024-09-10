@@ -13,6 +13,8 @@ The directory structure of the implementations is as follows:
 
 By this way, we can batch to benchmarking the implementations.
 
+> the c version general implementations [impl*] are recommend name the `opt`, if design for the 64-bit platform, name the `opt64`, similarly, the 32-bit platform name the `opt32`.
+
 
 ## Changes made to the implementations and the directories
 
