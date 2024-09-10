@@ -7,11 +7,15 @@ This repository hosts the benchmarking framework used to evaluate the software p
  - `benchmarks`: benchmark results
 
 
-# Implementations
+## Implementations
 
 More information on implementations included in this effort can be found [here](implementations/). Please note that this repository only includes implementations that have successfully passed known answer tests. 
 
-# Refer benchmarking framework
+## Supported Platforms
+
+- [x] [Panduola board](https://www.alientek.com/Product_Details/77.html) for STM32L475vet6, is compatible with the STM32L4 series of microcontrollers.
+
+## Refer benchmarking framework
 
 - [NIST LWC - 2022](https://github.com/usnistgov/Lightweight-Cryptography-Benchmarking)
   - more modern by use the platformio, little configure for more platforms.
