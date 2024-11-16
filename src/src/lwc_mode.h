@@ -1,1 +1,1 @@
-#define LWC_MODE_TIMING
+#define LWC_MODE_USE_ENCRYPT
