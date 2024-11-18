@@ -1520,12 +1520,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -1533,12 +1533,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -1547,12 +1547,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11       
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -1560,12 +1560,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -1574,12 +1574,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -1588,12 +1588,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -1601,12 +1601,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30  
@@ -1614,12 +1614,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -1836,12 +1836,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -1849,12 +1849,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -1862,12 +1862,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -1875,12 +1875,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -1888,12 +1888,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -1901,12 +1901,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -1914,12 +1914,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -1927,12 +1927,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -2149,12 +2149,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -2162,12 +2162,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -2175,12 +2175,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -2188,12 +2188,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -2201,12 +2201,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -2214,12 +2214,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -2227,12 +2227,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -2240,12 +2240,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -2462,12 +2462,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -2475,12 +2475,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -2488,12 +2488,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -2501,12 +2501,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -2514,12 +2514,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -2527,12 +2527,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -2540,12 +2540,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -2553,12 +2553,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -2775,12 +2775,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -2788,12 +2788,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -2801,12 +2801,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -2814,12 +2814,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -2827,12 +2827,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -2840,12 +2840,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -2853,12 +2853,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -2866,12 +2866,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -3088,12 +3088,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -3101,12 +3101,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -3114,12 +3114,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -3127,12 +3127,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -3140,12 +3140,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -3153,12 +3153,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -3166,12 +3166,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -3179,12 +3179,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -3401,12 +3401,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -3414,12 +3414,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -3427,12 +3427,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -3440,12 +3440,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -3453,12 +3453,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -3466,12 +3466,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -3479,12 +3479,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -3492,12 +3492,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -3714,12 +3714,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -3727,12 +3727,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -3740,12 +3740,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -3753,12 +3753,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -3766,12 +3766,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -3779,12 +3779,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -3792,12 +3792,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -3805,12 +3805,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
@@ -4027,12 +4027,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r12, r9
     and r5, r9, #0x2a
     mov r6, r5, ror #2
-    eor r12, r12, r6
+
     and r5, r9, #0x8a00
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #6
     and r5, r9, #0x2880
-    eor r5, r5, r6
+
     eor r12, r12, r5, ror #26
     and r5, r9, #0xa80000
     eor r12, r12, r5, ror #30
@@ -4040,12 +4040,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r9, r0
     and r5, r0, #0x2a
     mov r6, r5, ror #2
-    eor r9, r9, r6
+
     and r5, r0, #0x8a00
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #6
     and r5, r0, #0x2880
-    eor r5, r5, r6
+
     eor r9, r9, r5, ror #26
     and r5, r0, #0xa80000
     eor r9, r9, r5, ror #30
@@ -4053,12 +4053,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r0, r11
     and r5, r11, #0x2a  
     mov r6, r5, ror #2
-    eor r0, r0, r6        
+
     and r5, r11, #0x8a00  
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #6  
     and r5, r11, #0x2880   
-    eor r5, r5, r6
+
     eor r0, r0, r5, ror #26  
     and r5, r11, #0xa80000  
     eor r0, r0, r5, ror #30  
@@ -4066,12 +4066,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r14, r3
     and r5, r3, #0x2a  
     mov r6, r5, ror #2
-    eor r14, r14, r6        
+
     and r5, r3, #0x8a00  
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #6  
     and r5, r3, #0x2880   
-    eor r5, r5, r6
+
     eor r14, r14, r5, ror #26  
     and r5, r3, #0xa80000  
     eor r14, r14, r5, ror #30 
@@ -4079,12 +4079,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r3, r4
     and r5, r4, #0x2a  
     mov r6, r5, ror #2
-    eor r3, r3, r6        
+
     and r5, r4, #0x8a00  
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #6  
     and r5, r4, #0x2880   
-    eor r5, r5, r6
+
     eor r3, r3, r5, ror #26  
     and r5, r4, #0xa80000  
     eor r3, r3, r5, ror #30 
@@ -4092,12 +4092,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r4, r6
     and r5, r6, #0x2a  
     mov r7, r5, ror #2
-    eor r4, r4, r7        
+
     and r5, r6, #0x8a00  
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #6  
     and r5, r6, #0x2880   
-    eor r5, r5, r7
+
     eor r4, r4, r5, ror #26  
     and r5, r6, #0xa80000  
     eor r4, r4, r5, ror #30 
@@ -4105,12 +4105,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r2
     and r5, r2, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r2, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r2, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r2, #0xa80000  
     eor r2, r7, r5, ror #30 
@@ -4118,12 +4118,12 @@ encrypt_blocks: //expect p in r0, AES_bsconst in r14
     uxtb.w r7, r1
     and r5, r1, #0x2a  
     mov r6, r5, ror #2
-    eor r7, r7, r6        
+
     and r5, r1, #0x8a00  
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #6  
     and r5, r1, #0x2880   
-    eor r5, r5, r6
+
     eor r7, r7, r5, ror #26  
     and r5, r1, #0xa80000  
     eor r1, r7, r5, ror #30 
