@@ -6,7 +6,10 @@ LPLBC64,opt32,Os,414801,12092
 aes128_bitslicing,Ko-,O1,8936,27648
 aes128_bitslicing,Ko-,O2,8933,27228
 aes128_bitslicing,Ko-,O3,8932,27100
-aes128_bitslicing,Ko-,Os,8930,26396
+aes128_bitslicing,armv7m_asm,O1,8720,27360
+aes128_bitslicing,armv7m_asm,O2,8717,26940
+aes128_bitslicing,armv7m_asm,O3,8716,26812
+aes128_bitslicing,armv7m_asm,Os,8714,26108
 warp64,opt32,O1,38843,11808
 warp64,opt32,O2,27642,11520
 warp64,opt32,O3,23711,12824
