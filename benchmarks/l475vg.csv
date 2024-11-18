@@ -1,5 +1,4 @@
 variant,impl,config,enc,flash
-,,,,26396
 LPLBC64,opt32,O1,227853,13728
 LPLBC64,opt32,O2,413293,13084
 LPLBC64,opt32,O3,345108,13828
@@ -7,6 +6,7 @@ LPLBC64,opt32,Os,414801,12092
 aes128_bitslicing,Ko-,O1,8936,27648
 aes128_bitslicing,Ko-,O2,8933,27228
 aes128_bitslicing,Ko-,O3,8932,27100
+aes128_bitslicing,Ko-,Os,8930,26396
 aes128_bitslicing,armv7m_asm,O1,8072,26496
 aes128_bitslicing,armv7m_asm,O2,8069,26076
 aes128_bitslicing,armv7m_asm,O3,8068,25948
