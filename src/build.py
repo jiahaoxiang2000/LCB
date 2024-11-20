@@ -144,8 +144,8 @@ def check_source_compatibility(submission, variant, impl):
         impl_arch = "armv7m"
     elif (folder / "lcb_arch_riscv").exists():
         impl_arch = "riscv"
-    elif (folder / "lcb_arch_esp8266").exists():
-        impl_arch = "esp8266"
+    elif (folder / "lcb_arch_esp32s3").exists():
+        impl_arch = "esp32s3"
     elif (folder / "lcb_arch_sse2").exists():
         impl_arch = "sse2"
     elif (folder / "lcb_arch_avx512").exists():
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     print(f"process_primary   : {process_primary}")
     print(f"overwrite         : {overwrite}")
 
-    supported_impl = "armv7m" if target == "l475vg" else ""
+    supported_impl = "armv7m" if target == "l475vg" else "esp32s3" if target == "esp32s3" else ""
 
     out_folder = base_folder / f"outputs/{target}"
     temp_folder = out_folder / "temp"

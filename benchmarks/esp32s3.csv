@@ -1,4 +1,12 @@
 variant,impl,config,enc,flash
+LPLBC64,opt32,O1,183382,141683
+LPLBC64,opt32,O2,183382,141683
+LPLBC64,opt32,O3,183377,141683
+LPLBC64,opt32,Os,183331,141683
+warp64_bitslicing,opt32,O1,42915,139655
+warp64_bitslicing,opt32,O2,42915,139655
+warp64_bitslicing,opt32,O3,42915,139655
+warp64_bitslicing,opt32,Os,42915,139655
 warp64,opt32,O1,36959,139439
 warp64,opt32,O2,36959,139439
 warp64,opt32,O3,36959,139439
