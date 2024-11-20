@@ -29,43 +29,41 @@
 // copyright protection within the United States.
 //
 
-#ifdef LWC_PLATFORM_NODEMCUV2
+#ifdef LCB_PLATFORM_esp32s3
 
-#include <Esp.h>
+#include "esp_timer.h"
+#include "esp_system.h"
 
 class timer_cycles {
 
 public:
-
     timer_cycles(uint32_t& output) : _output(output) {
-
-        // prevent Soft WDT reset
-        yield();
+        // prevent RTOS watchdog reset
+        vPortYield();
 
         // disable interrupts
-        cli();
+        portDISABLE_INTERRUPTS();
+        
 
-        _start = esp_get_cycle_count();
+        _start = esp_cpu_get_ccount();
     }
 
     ~timer_cycles() {
-
-        uint32_t end = esp_get_cycle_count();
-
+        uint32_t end = esp_cpu_get_ccount();
+        
         _output = end - _start;
 
         // enable interrupts
-        sei();
+        portENABLE_INTERRUPTS();
     }
 
     static const char *name() {
-        return "RTC-clock";
+        return "esp32s3_cycles";
     }
 
 private:
-
     uint32_t &_output;
     volatile uint32_t _start;
 };
 
-#endif // LWC_PLATFORM_NODEMCUV2
+#endif // LWC_PLATFORM_ESP32S3

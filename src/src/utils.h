@@ -44,8 +44,11 @@ extern sendl SENDL;
 
 template<typename T>
 sout& operator<<(sout &s, const T &t) {
-
+    #ifdef LCB_PLATFORM_esp32s3
+        Serial0.print(t);
+    #else
     Serial.print(t);
+    #endif
     return s;
 }
 

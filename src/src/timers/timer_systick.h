@@ -34,7 +34,6 @@
 
 #ifdef LWC_PLATFORM_l475vg
 
-
 class timer_cycles {
 
 public:

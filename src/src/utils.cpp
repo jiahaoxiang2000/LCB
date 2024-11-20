@@ -38,7 +38,11 @@ sendl SENDL;
 
 sout& operator<<(sout &s, sendl&) 
 {
+    #ifdef LCB_PLATFORM_esp32s3
+        Serial0.println();
+    #else
     Serial.println();
+    #endif
     return s;
 }
 
@@ -58,6 +62,8 @@ const char* get_platform_name()
 {
     #if defined (LWC_PLATFORM_l475vg)
         return "l475vg";
+    #elif defined (LCB_PLATFORM_esp32s3)
+        return "esp32s3";
     #else
         return "Unknown platform";
     #endif

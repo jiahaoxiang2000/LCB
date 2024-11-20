@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Constants
 EXT = ""  # Mac, Linux
-platform_list = ["l475vg"]
+platform_list = ["l475vg","esp32s3"]
 experiment_list = ["size", "timing"]
 skip_submission = []
 skip_variant = []

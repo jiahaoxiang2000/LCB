@@ -37,7 +37,10 @@
 #include <Esp.h>
 #endif
 
+#ifdef LWC_PLATFORM_l475vg
+// stm32l4xx_hal_uart.h, these is support by the STM32CubeL4 HAL library
 UART_HandleTypeDef huart1;
+#endif
 
 void setup()
 {
@@ -45,15 +48,18 @@ void setup()
 // Don't use IO for size experiments to reduce the overall size of the binary
 #ifndef LWC_EXPERIMENT_SIZE
 
-  // initialize LED digital pin as an output.
+  // initialize LED digital pin as an output and open the serial port
+  #ifdef LWC_PLATFORM_l475vg
   pinMode(PE9, OUTPUT);
-
   Serial.begin(9600);
   Serial.println();
-
-  // Wait for a few seconds before running the experiments in order to allow
-  // enonugh time for opening the terminal window if run from the IDE
-  stop_watch(1);
+   stop_watch(1);
+  #elif LCB_PLATFORM_esp32s3
+  pinMode(GPIO_NUM_1, OUTPUT);
+  Serial0.begin(9600);
+  Serial0.println();
+  stop_watch(5);
+  #endif
 #endif
 
   int ret = do_experiments();
@@ -65,7 +71,16 @@ void setup()
 
 void loop()
 {
+  #ifdef LCB_PLATFORM_esp32s3
+    // let the eps32s3 board blink
+    gpio_set_level(GPIO_NUM_1, 1);
+    delay(1000);
+    gpio_set_level(GPIO_NUM_1, 0);
+    delay(1000);
+
+  #endif
   // turn the LED on (HIGH is the voltage level)
+  #ifdef LWC_PLATFORM_l475vg
   digitalWrite(PE9, HIGH);
   // wait for a second
   delay(1000);
@@ -73,4 +88,5 @@ void loop()
   digitalWrite(PE9, LOW);
   // wait for a second
   delay(1000);
+  #endif
 }
