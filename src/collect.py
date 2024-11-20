@@ -47,6 +47,13 @@ def collect_data(base_dir):
 
 # Function to write aggregated data to a CSV file
 def write_to_csv(data, output_file):
+    existing_data = []
+    if os.path.exists(output_file):
+        with open(output_file, 'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                existing_data.append(row)
+    
     with open(output_file, 'w', newline='') as csvfile:
         fieldnames = ["variant", "impl", "config", "enc", "flash"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -54,8 +61,10 @@ def write_to_csv(data, output_file):
         # sort the data by impl
         data = sorted(data, key=lambda x: (x["variant"], x["impl"], x["config"]))
         for row in data:
+            if row not in existing_data:
+                writer.writerow(row)
+        for row in existing_data:
             writer.writerow(row)
-        
 
 # Main script
 if __name__ == "__main__":

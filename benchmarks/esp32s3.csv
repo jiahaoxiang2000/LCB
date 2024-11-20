@@ -1,0 +1,5 @@
+variant,impl,config,enc,flash
+warp64,opt32,O1,36959,139439
+warp64,opt32,O2,36959,139439
+warp64,opt32,O3,36959,139439
+warp64,opt32,Os,36959,139439
