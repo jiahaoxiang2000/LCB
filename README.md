@@ -14,7 +14,7 @@ More information on implementations included in this effort can be found [here](
 ## Supported Platforms
 
 - [x] [Panduola board](https://www.alientek.com/Product_Details/77.html) for STM32L475vet6, is compatible with the STM32L4 series of microcontrollers.
-- [] [Longan nano](https://longan.sipeed.com/en/) for GD32VF103CBT6.
+- [x] [ESP32S3](https://www.espressif.com/en/products/socs/esp32s3) for ESP32-S3, is compatible with the ESP32 series of microcontrollers.
  
 ## Refer benchmarking framework
 
@@ -29,7 +29,7 @@ More information on implementations included in this effort can be found [here](
 
 - [x] remove the KAT function in the benchmarking framework
 - [x] let warp implement to different floder
-- [] add the more platform to the benchmarking framework
+- [x] add the more platform to the benchmarking framework
 - [x] refloct the build.sh by the python script
 - [] the print use the log framework
 - [x] add the data collection script
