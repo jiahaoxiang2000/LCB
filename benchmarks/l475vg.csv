@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+qarmav2_64_bitslicing,armv7m,O1,10976,25888
+qarmav2_64_bitslicing,armv7m,O2,10974,25468
+qarmav2_64_bitslicing,armv7m,O3,10973,25340
+qarmav2_64_bitslicing,armv7m,Os,10971,24636
 LPLBC64,opt32,O1,227853,13728
 LPLBC64,opt32,O2,413293,13084
 LPLBC64,opt32,O3,345108,13828

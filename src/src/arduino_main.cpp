@@ -53,7 +53,7 @@ void setup()
   pinMode(PE9, OUTPUT);
   Serial.begin(9600);
   Serial.println();
-   stop_watch(1);
+   stop_watch(3);
   #elif LCB_PLATFORM_esp32s3
   pinMode(GPIO_NUM_1, OUTPUT);
   Serial0.begin(9600);
