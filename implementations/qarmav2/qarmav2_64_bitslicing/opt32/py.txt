@@ -1,0 +1,316 @@
+def integer_to_bitslicing(b0, b1):
+    b0_b = bin(b0)[2:].zfill(64)
+    b1_b = bin(b1)[2:].zfill(64)
+    R0_b = ""
+    R1_b = ""
+    R2_b = ""
+    R3_b = ""
+    for i in range(0, len(b0_b), 4):
+        R0_b += b0_b[i]
+        R0_b += b1_b[i]
+
+        R1_b += b0_b[i + 1]
+        R1_b += b1_b[i + 1]
+
+        R2_b += b0_b[i + 2]
+        R2_b += b1_b[i + 2]
+
+        R3_b += b0_b[i + 3]
+        R3_b += b1_b[i + 3]
+
+    return int(R0_b, 2), int(R1_b, 2), int(R2_b, 2), int(R3_b, 2)
+
+def bitslicing_to_integer(R0, R1, R2, R3):
+    R0_b = bin(R0)[2:].zfill(32)
+    R1_b = bin(R1)[2:].zfill(32)
+    R2_b = bin(R2)[2:].zfill(32)
+    R3_b = bin(R3)[2:].zfill(32)
+    b0_b = ""
+    b1_b = ""
+    for i in range(0, len(R0_b), 2):
+        b0_b += R0_b[i]
+        b0_b += R1_b[i]
+        b0_b += R2_b[i]
+        b0_b += R3_b[i]
+
+        b1_b += R0_b[i + 1]
+        b1_b += R1_b[i + 1]
+        b1_b += R2_b[i + 1]
+        b1_b += R3_b[i + 1]
+
+    return int(b0_b, 2), int(b1_b, 2)
+
+def right_cyclic_shift(n, bits, shift_amount):
+    return ((n >> shift_amount) | (n << (bits - shift_amount))) & ((1 << bits) - 1)
+
+
+def left_cyclic_shift(n, bits, shift_amount):
+    return ((n << shift_amount) | (n >> (bits - shift_amount))) & ((1 << bits) - 1)
+
+
+
+def permutation_bitslicing_shift(R0, R1, R2, R3, p):
+    shift = [i - p[i] if i - p[i] >= 0 else i - p[i] + 16 for i in range(16)]
+    shift_number = []
+    shift_mask =[]
+    r0 = 0
+    r1 = 0
+    r2 = 0
+    r3 = 0
+    for i in range(16):
+        shift_number.append(shift[i] * 2)
+        shift_mask.append(hex(3 << ((15 - i) * 2)))
+        r0 |= (right_cyclic_shift(R0, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r1 |= (right_cyclic_shift(R1, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r2 |= (right_cyclic_shift(R2, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r3 |= (right_cyclic_shift(R3, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+    
+    
+    return r0, r1, r2, r3
+
+def permutation_bitslicing(R0, R1, R2, R3, p):
+    shift = [i - p[i] if i - p[i] >= 0 else i - p[i] + 16 for i in range(16)]
+    r0 = 0
+    r1 = 0
+    r2 = 0
+    r3 = 0
+    for i in range(16):
+        r0 |= (right_cyclic_shift(R0, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r1 |= (right_cyclic_shift(R1, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r2 |= (right_cyclic_shift(R2, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+        r3 |= (right_cyclic_shift(R3, 32, shift[i] * 2)) & (3 << ((15 - i) * 2))
+    return r0, r1, r2, r3
+
+def diffusion_matrix(R0, R1, R2, R3):
+    r0 = 0
+    r1 = 0
+    r2 = 0
+    r3 = 0
+    r0 |= (
+        left_cyclic_shift(R1, 32, 4 * 2)
+        ^ left_cyclic_shift(R2, 32, 8 * 2)
+        ^ left_cyclic_shift(R3, 32, 12 * 2)
+    )
+    r1 |= (
+        left_cyclic_shift(R2, 32, 4 * 2)
+        ^ left_cyclic_shift(R3, 32, 8 * 2)
+        ^ left_cyclic_shift(R0, 32, 12 * 2)
+    )
+    r2 |= (
+        left_cyclic_shift(R3, 32, 4 * 2)
+        ^ left_cyclic_shift(R0, 32, 8 * 2)
+        ^ left_cyclic_shift(R1, 32, 12 * 2)
+    )
+    r3 |= (
+        left_cyclic_shift(R0, 32, 4 * 2)
+        ^ left_cyclic_shift(R1, 32, 8 * 2)
+        ^ left_cyclic_shift(R2, 32, 12 * 2)
+    )
+    return r0, r1, r2, r3
+
+
+def sbox_bit(R0, R1, R2, R3):
+    r0, r1, r2, r3 = 0, 0, 0, 0
+    T = [0] * 20
+    T[0] = R2 ^ R3
+    T[1] = T[0] ^ 0x1
+    T[2] = T[1] | R0
+    T[3] = T[2] ^ R3
+    T[4] = T[3] | R1
+    T[5] = R0 ^ T[4]
+    T[6] = R1 ^ T[0]
+    T[7] = T[1] ^ T[3]
+    T[8] = R2 | T[7]
+    T[9] = T[8] ^ T[3]
+    T[10] = T[6] | T[8]
+    T[11] = T[10] | R1
+    T[12] = T[11] & T[9]
+    T[13] = R1 ^ T[10]
+    T[14] = T[1] ^ T[0]
+    T[15] = T[0] ^ T[5]
+    T[16] = T[13] & T[15]
+    T[17] = R3 & T[15]
+    T[18] = T[16] ^ T[8]
+    T[19] = T[13] | T[17]
+    r0 = T[12]
+    r1 = T[5]
+    r2 = T[18]
+    r3 = T[19]
+
+    return r0, r1, r2, r3
+
+
+def split_and_merge(i):
+    # Split i into four bits
+    R0 = (i >> 3) & 1
+    R1 = (i >> 2) & 1
+    R2 = (i >> 1) & 1
+    R3 = i & 1
+
+    # Call sbox_bit on the bits
+    r0, r1, r2, r3 = sbox_bit(R0, R1, R2, R3)
+
+    # Merge the results back into an integer
+    result = (r0 << 3) | (r1 << 2) | (r2 << 1) | r3
+
+    return result
+
+def sbox(R0, R1, R2, R3):
+    r0, r1, r2, r3 = 0, 0, 0, 0
+    T = [0] * 20
+    T[0] = R2 ^ R3
+    T[1] = T[0] ^ 0xFFFF_FFFF
+    T[2] = T[1] | R0
+    T[3] = T[2] ^ R3
+    T[4] = T[3] | R1
+    T[5] = R0 ^ T[4]
+    T[6] = R1 ^ T[0]
+    T[7] = T[1] ^ T[3]
+    T[8] = R2 | T[7]
+    T[9] = T[8] ^ T[3]
+    T[10] = T[6] | T[8]
+    T[11] = T[10] | R1
+    T[12] = T[11] & T[9]
+    T[13] = R1 ^ T[10]
+    T[14] = T[1] ^ T[0]
+    T[15] = T[0] ^ T[5]
+    T[16] = T[13] & T[15]
+    T[17] = R3 & T[15]
+    T[18] = T[16] ^ T[8]
+    T[19] = T[13] | T[17]
+    r0 = T[12]
+    r1 = T[5]
+    r2 = T[18]
+    r3 = T[19]
+
+    return r0, r1, r2, r3
+
+def sbox_inverse(R0, R1, R2, R3):
+    T = [0] * 20
+    T[0] = R2 & R1
+    T[1] = R0 ^ R1
+    T[2] = R2 | R0
+    T[3] = R0 ^ T[0]
+    T[4] = R1 | R2
+    T[5] = R3 & T[3]
+    T[6] = R1 ^ 0xFFFF_FFFF
+    T[7] = T[5] | R1
+    T[8] = T[1] | R3
+    T[9] = R3 | R2
+    T[10] = T[9] & T[4]
+    T[11] = T[6] ^ T[7]
+    T[12] = T[4] ^ T[8]
+    T[13] = T[2] ^ T[5]
+    T[14] = T[12] | R0
+    T[15] = T[14] & T[9]
+    T[16] = T[11] ^ T[0]
+    T[17] = T[10] & T[8]
+    T[18] = T[6] | T[17]
+    T[19] = T[16] & T[18]
+    r0 = T[19]
+    r1 = T[13]
+    r2 = T[15]
+    r3 = T[17]
+
+    return r0, r1, r2, r3
+
+
+def xor_int_bitslicing(R0, R1, R2, R3, integer):
+    R0_, R1_, R2_, R3_ = integer_to_bitslicing(integer, integer)
+    return R0 ^ R0_, R1 ^ R1_, R2 ^ R2_, R3 ^ R3_
+
+
+if __main__ :
+    # constants for the qarmav2 cipher
+    tau_f = [1, 10, 14, 6, 2, 9, 13, 5, 0, 8, 12, 4, 3, 11, 15, 7]
+    tau_f_inverse = [tau_f.index(i) for i in range(len(tau_f))]
+    c2 = 0x243F_6A88_85A3_08D3
+    tau = [0, 11, 6, 13, 10, 1, 12, 7, 5, 14, 3, 8, 15, 4, 9, 2]
+    tau_inverse = [tau.index(i) for i in range(len(tau))]
+    alpha = 0x13198A2E03707344
+    beta = psi_func(alpha)
+
+    # input data
+    P = 0x0000000000000000
+    K0, K1 = 0x0123456789ABCDEF, 0xFEDCBA9876543210
+    T0, T1 = 0x7E5C3A18F6D4B290, 0x1EB852FC9630DA74
+    W0 = o_func(o_func(K0, 64), 64)
+    W1 = o_func_inverse(o_func_inverse(K1, 64), 64)
+
+    # cipher of r = 5
+    r = 5
+
+    # pre computation some constants
+    T0 = int_to_4bit_list(T0)
+    for i in range(r - 1):
+        T0 = permutation(T0, tau_f)
+    T0 = bit_list_to_int(T0)
+
+    cs = [0, 0, c2]
+    for i in range(3, r + 1):
+        cs.append(psi_func(cs[-1]))
+
+    t0, t1 = T0, T1
+    k0, k1 = K0, K1
+
+    # start the encryption
+    # white key addition
+    r0, r1, r2, r3 = integer_to_bitslicing(P, P)
+    r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k0)
+    
+    r0, r1, r2, r3 = sbox(r0, r1, r2, r3)
+    
+    # forwards part
+    for i in range(1, r + 1):
+        if i % 2 == 1:
+            r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k1 ^ t1 ^ cs[i])
+            
+        else:
+            r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k0 ^ t0 ^ cs[i])
+            
+        r0, r1, r2, r3 = permutation_bitslicing(r0, r1, r2, r3, tau)
+        r0, r1, r2, r3 = diffusion_matrix(r0, r1, r2, r3)
+        r0, r1, r2, r3 = sbox(r0, r1, r2, r3)
+        if i % 2 == 1:
+            t1 = permutation(int_to_4bit_list(t1), tau_f)
+            t1 = bit_list_to_int(t1)
+        else:
+            t0 = permutation(int_to_4bit_list(t0), tau_f_inverse)
+            t0 = bit_list_to_int(t0)
+
+    # middle part
+    k0 = o_func(k0, 64) ^ alpha
+    k1 = o_func_inverse(k1, 64) ^ beta
+
+    r0, r1, r2, r3 = permutation_bitslicing(r0, r1, r2, r3, tau)
+
+    r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, W0)
+    
+    r0, r1, r2, r3 = diffusion_matrix(r0, r1, r2, r3)
+    r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, W1)
+    
+    r0, r1, r2, r3 = permutation_bitslicing(r0, r1, r2, r3, tau_inverse)
+
+    # backwards part
+    for i in range(r, 0, -1):
+        r0, r1, r2, r3 = sbox_inverse(r0, r1, r2, r3)
+        r0, r1, r2, r3 = diffusion_matrix(r0, r1, r2, r3)
+        r0, r1, r2, r3 = permutation_bitslicing(r0, r1, r2, r3, tau_inverse)
+
+        if (i + 1) % 2 == 1:
+            r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k1 ^ t1 ^ cs[i])
+        else:
+            r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k0 ^ t0 ^ cs[i])
+            
+            
+        if i > 1 and i % 2 == 0:
+            t1 = permutation(int_to_4bit_list(t1), tau_f)
+            t1 = bit_list_to_int(t1)
+        else:
+            t0 = permutation(int_to_4bit_list(t0), tau_f_inverse)
+            t0 = bit_list_to_int(t0)
+    
+    # end white key addition
+    r0, r1, r2, r3 = sbox_inverse(r0, r1, r2, r3)
+    r0, r1, r2, r3 = xor_int_bitslicing(r0, r1, r2, r3, k1)
+        

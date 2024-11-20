@@ -120,7 +120,7 @@ int crypto_encrypt(unsigned char *c,
                    const unsigned char *m, unsigned long long mlen,
                    const unsigned char *k)
 {
-  uint8_t temp0[16];
+   uint8_t temp0[16];
 
     W0 = o_func(o_func(K0, 64), 64);
     W1 = o_func_inverse(o_func_inverse(K1, 64), 64);
