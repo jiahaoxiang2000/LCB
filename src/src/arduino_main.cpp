@@ -77,7 +77,7 @@ void setup()
 #endif
 #endif
 
-  //   int ret = do_experiments();
+  int ret = do_experiments();
 
 #ifndef LWC_EXPERIMENT_SIZE
   SOUT << "# LCB exit " << SENDL;
