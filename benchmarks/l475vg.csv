@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+aes128,opt32,O1,8003,12204
+aes128,opt32,O2,5345,11920
+aes128,opt32,O3,5492,12784
+aes128,opt32,Os,8616,10896
 tinyjambu128,opt32,O1,4707,12072
 tinyjambu128,opt32,O2,4552,11660
 tinyjambu128,opt32,O3,4529,11604
