@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+tinyjambu128,opt32,O1,4707,12072
+tinyjambu128,opt32,O2,4552,11660
+tinyjambu128,opt32,O3,4529,11604
+tinyjambu128,opt32,Os,4877,10724
 ASCON128,opt32,O1,7245,13752
 ASCON128,opt32,O2,6416,12640
 ASCON128,opt32,O3,6664,14352
