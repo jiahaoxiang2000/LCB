@@ -1,12 +1,9 @@
 #include "lcb_crypto.h"
 #include "api.h"
 
-
 cipher_ctx lcb_cipher = {
-	"warp64_bitslicing",
+	"warp128_bitslicing",
 	"opt32",
 	CRYPTO_KEYBYTES,
 	crypto_encrypt,
-	crypto_decrypt
-};
-
+	crypto_decrypt};
