@@ -20,3 +20,7 @@ This page contains the benchmark results grouped with respect to the microcontro
   - Program crash
 - In the case of a decryption failure, the timing measurement is not recorded but the experiment proceeds with the next input. On the contrary, when the program crashes, the measurements for the remaining inputs cannot be performed.
 - The `config` (Ox compile level) does not affect the `enc` (encryption cycles)` in these results for the ESP32-S3 platform; the timing measurements remain the same across different optimization levels on this platform.
+
+### Environment Introduction
+
+The benchmarking experiments were conducted on 32-bit microcontroller platforms, specifically the STM32L475VET6 and ESP32-S3. The evaluation of LLBC implementations follows a methodology analogous to the FELICS benchmarking framework, focusing on the encryption of 128-bit data blocks in ECB mode. All cipher implementations are developed in assembly language and compiled using platform-specific toolchains supported by PlatformIO. The reported performance metrics comprise code size (ROM) and execution time (measured in clock cycles).
