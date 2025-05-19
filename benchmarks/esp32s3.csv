@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+lllwbc64,opt32,O1,88355,140399
+lllwbc64,opt32,O2,88364,140399
+lllwbc64,opt32,O3,88344,140399
+lllwbc64,opt32,Os,88355,140399
 simon64,opt32,O1,2106,139263
 simon64,opt32,O2,2106,139263
 simon64,opt32,O3,2106,139263
