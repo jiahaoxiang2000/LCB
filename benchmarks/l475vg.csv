@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+aes128,opt32-f,O1,2608,14576
+aes128,opt32-f,O2,2748,14328
+aes128,opt32-f,O3,2692,14704
+aes128,opt32-f,Os,2602,13308
 aes128,opt32,O1,8003,12204
 aes128,opt32,O2,5345,11920
 aes128,opt32,O3,5492,12784
