@@ -52,6 +52,16 @@ cd src/
 python build.py -t l475vg -s cipher_name -v variant -e "size" -w
 ```
 
+if builds fails, check `src/results/l475vg/size/cipher_name-variant-l475vg-release-os-err.txt` for errors.
+
+6. to test, run the benchmark:
+
+```bash
+python build.py -t l475vg -s cipher_name -v variant -e "timing" -w
+```
+
+7. see the output results in `src/results/l475vg/timing/cipher_name-variant-l475vg-release-os.txt`
+
 ### Platform-Specific Development
 
 - **STM32L475**: Use `armv7m` assembly optimizations
