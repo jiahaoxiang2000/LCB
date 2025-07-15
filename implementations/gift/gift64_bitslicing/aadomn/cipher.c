@@ -19,7 +19,7 @@ int cipher_encrypt(unsigned char *c, const unsigned char *m, unsigned long long 
     memset(padded_in + 8, 0, 8);
 
     // Use giftb64_encrypt_block for bitslicing
-    giftb64_encrypt_block(padded_out, rkey, padded_in, padded_in + 8);
+    gift64_encrypt_block(padded_out, rkey, padded_in, padded_in + 8);
 
     memcpy(c, padded_out, 8);
 
