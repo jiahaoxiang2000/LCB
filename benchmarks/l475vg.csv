@@ -3,10 +3,10 @@ gift64_bitslicing,aadomn,O1,2287,15904
 gift64_bitslicing,aadomn,O2,2285,15476
 gift64_bitslicing,aadomn,O3,2282,15344
 gift64_bitslicing,aadomn,Os,2282,14644
-aes128,opt32-f,O1,2608,14576
-aes128,opt32-f,O2,2748,14328
-aes128,opt32-f,O3,2692,14704
-aes128,opt32-f,Os,2602,13308
+aes128,opt32-f,O1,6311,23576
+aes128,opt32-f,O2,5548,24328
+aes128,opt32-f,O3,5204,26616
+aes128,opt32-f,Os,6701,22008
 aes128,opt32,O1,8003,12204
 aes128,opt32,O2,5345,11920
 aes128,opt32,O3,5492,12784
