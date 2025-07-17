@@ -7,10 +7,6 @@ static u32 rkey[56];
 int cipher_encrypt(unsigned char *c, const unsigned char *m, unsigned long long mlen, const unsigned char *k)
 {
 
-    // Convert key to u32 array and rearrange
-    gift64_rearrange_key(rkey, k);
-    giftb64_keyschedule(rkey);
-
     // For single block encryption, we need to pad to 16 bytes for the parallel implementation
     u8 padded_in[16];
     u8 padded_out[16];

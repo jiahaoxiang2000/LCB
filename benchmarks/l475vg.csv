@@ -1,8 +1,8 @@
 variant,impl,config,enc,flash
-gift64_bitslicing,aadomn,O1,3573,15924
-gift64_bitslicing,aadomn,O2,3572,15496
-gift64_bitslicing,aadomn,O3,3570,15364
-gift64_bitslicing,aadomn,Os,3569,14664
+gift64_bitslicing,aadomn,O1,2287,15904
+gift64_bitslicing,aadomn,O2,2285,15476
+gift64_bitslicing,aadomn,O3,2282,15344
+gift64_bitslicing,aadomn,Os,2282,14644
 aes128,opt32-f,O1,2608,14576
 aes128,opt32-f,O2,2748,14328
 aes128,opt32-f,O3,2692,14704
