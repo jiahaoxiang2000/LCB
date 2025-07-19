@@ -266,7 +266,7 @@ gift64_rearrange_key:
 /*****************************************************************************
 * Fully unrolled ARM assembly implementation of the GIFTb-64 key schedule.
 *****************************************************************************/
-@ void giftb64_keyschedule(u32 *rkey) {
+@ void giftb64_keyschedule(u32 *rkey) 
 .global giftb64_keyschedule
 .type   giftb64_keyschedule,%function
 giftb64_keyschedule:
@@ -290,7 +290,7 @@ giftb64_keyschedule:
 * 32-bit architecture. 
 *****************************************************************************/
 @ void giftb64_encrypt_block(u8 *out, const u32* rkey,
-@       const u8 *block0, const u8* block1) {
+@       const u8 *block0, const u8* block1) 
 .global giftb64_encrypt_block
 .type   giftb64_encrypt_block,%function
 giftb64_encrypt_block:
@@ -298,21 +298,6 @@ giftb64_encrypt_block:
     // load plaintext blocks
     ldrd    r6, r4, [r2]
     ldrd    r7, r5, [r3]
-    rev     r4, r4                  // slice0 in r4
-    rev     r5, r5                  // slice1 in r5
-    rev     r6, r6                  // slice2 in r6
-    rev     r7, r7                  // slice3 in r7
-    // ------------------ PACKING INTERLEAVE ------------------
-    movw    r9, #0x0f0f             // mask for swpmv
-    orr     r10, r9, r9, lsl #4     // mask for swpmv
-    swpmv   r4, r5, r4, r5, r9, #4, r3
-    swpmv   r6, r7, r6, r7, r9, #4, r3
-    swpmv   r4, r5, r4, r5, r10, #16, r3
-    swpmv   r6, r7, r6, r7, r10, #16, r3
-    swpmv   r4, r4, r4, r4, #0xff00, #8, r3
-    swpmv   r5, r5, r5, r5, #0xff00, #8, r3
-    swpmv   r6, r6, r6, r6, #0xff00, #8, r3
-    swpmv   r7, r7, r7, r7, #0xff00, #8, r3
     // ------------------ GIFTb-CORE ROUTINE ------------------
     movw    r10, #0x1111
     movt    r10, #0x1111
@@ -346,21 +331,7 @@ giftb64_encrypt_block:
     round_1 #0x2288, #0x0000
     round_2 #0x8811, #0x0011
     round_3 #0x00bb, #0x8800
-    // ------------------ UNPACKING INTERLEAVE ------------------
-    movw    r9, #0x0f0f             // mask for swpmv
-    orr     r10, r9, r9, lsl #4     // mask for swpmv
-    swpmv   r4, r4, r4, r4, #0xff00, #8, r3
-    swpmv   r5, r5, r5, r5, #0xff00, #8, r3
-    swpmv   r6, r6, r6, r6, #0xff00, #8, r3
-    swpmv   r7, r7, r7, r7, #0xff00, #8, r3
-    swpmv   r4, r5, r4, r5, r10, #16, r3
-    swpmv   r6, r7, r6, r7, r10, #16, r3
-    swpmv   r4, r5, r4, r5, r9, #4, r3
-    swpmv   r6, r7, r6, r7, r9, #4, r3
-    rev     r4, r4
-    rev     r5, r5
-    rev     r6, r6
-    rev     r7, r7
+    // output the ciphertext blocks  
     stm     r0, {r4-r7}
     pop     {r2-r12,r14}
     bx      lr

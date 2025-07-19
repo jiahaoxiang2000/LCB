@@ -1,4 +1,8 @@
 variant,impl,config,enc,flash
+gift64_bitslicing,armv7m,O1,1849,15316
+gift64_bitslicing,armv7m,O2,1842,14888
+gift64_bitslicing,armv7m,O3,1843,14756
+gift64_bitslicing,armv7m,Os,1837,14056
 gift64_bitslicing,aadomn,O1,2287,15904
 gift64_bitslicing,aadomn,O2,2285,15476
 gift64_bitslicing,aadomn,O3,2282,15344
