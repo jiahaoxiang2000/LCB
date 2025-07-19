@@ -4,7 +4,8 @@
 *
 * See "Fixslicing: A New GIFT Representation" paper available at 
 * https://eprint.iacr.org/2020/412.pdf for more details.
-*
+* Github repository: https://github.com/aadomn/gift
+* 
 * @author   Alexandre Adomnicai, Nanyang Technological University
 *
 * @date     June 2021
